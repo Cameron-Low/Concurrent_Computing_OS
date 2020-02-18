@@ -1,76 +1,90 @@
-/* Copyright (C) 2017 Daniel Page <csdsp@bristol.ac.uk>
- *
- * Use of this source code is restricted per the CC BY-NC-ND license, a copy of 
- * which can be found via http://creativecommons.org (and should be included as 
- * LICENSE.txt within the associated archive or repository).
- */
+/* Interrupt Vector Table */
+int_data:
+    ldr pc, int_addr_rst    @ reset vector -> SVC mode
+    b .                     @ undefined instruction vector -> UND mode
+    ldr pc, int_addr_svc    @ supervisor call vector -> SVC mode
+    b .                     @ pre-fetch abort vector -> ABT mode
+    b .                     @ data abort vector -> ABT mode
+    b .                     @ reserved
+    ldr pc, int_addr_irq    @ IRQ vector -> IRQ mode
+    b .                     @ FIQ vector -> FIQ mode
 
-/* The following captures the interrupt vector table, and a function to
- * copy it into place (which is called on reset): note that 
- * 
- * - for interrupts we don't handle, an infinite loop is realised (that
- *   approximates halting the processor), and
- * - we copy the table itself, *and* the associated addresses stored as
- *   static data: this preserves the relative offset between each ldr
- *   instruction and wherever it loads from.
- */
+/* Assign values to labels for their respective interrupt handlers */
+int_addr_rst:
+    .word lolevel_handler_rst
+int_addr_svc:
+    .word lolevel_handler_svc
+int_addr_irq:
+    .word lolevel_handler_irq
 	
-int_data:            ldr   pc, int_addr_rst        @ reset                 vector -> SVC mode
-                     b     .                       @ undefined instruction vector -> UND mode
-                     ldr   pc, int_addr_svc        @ supervisor call       vector -> SVC mode
-                     b     .                       @ pre-fetch abort       vector -> ABT mode
-                     b     .                       @      data abort       vector -> ABT mode
-                     b     .                       @ reserved
-                     ldr   pc, int_addr_irq        @ IRQ                   vector -> IRQ mode
-                     b     .                       @ FIQ                   vector -> FIQ mode
-
-int_addr_rst:        .word lolevel_handler_rst
-int_addr_svc:        .word lolevel_handler_svc
-int_addr_irq:        .word lolevel_handler_irq
-	
+/* Allow linker access */
 .global int_init
-	
-int_init:            mov   r0, #0                  @ set destination address
-                     ldr   r1, =int_data           @ set source      address = start of     data
-                     ldr   r2, =int_init           @ set source      limit   = start of function
 
-l0:                  ldr   r3, [ r1 ], #4          @ load  word, inc. source      address
-                     str   r3, [ r0 ], #4          @ store word, inc. destination address
+/* Copy IVT to memory with base address 0 */
+int_init:
+    /* Destination base value */
+    mov r0, #0
+    
+    /* Start of IVT */
+    ldr r1, =int_data
+    /* End of IVT */
+    ldr r2, =int_init
 
-                     cmp   r1, r2                  
-                     bne   l0                      @ loop if address != limit
-               
-                     mov   pc, lr                  @ return
+/* Copy loop */
+l0:
+    /* Copy IVT entry to destination */
+    ldr r3, [r1], #4
+    str r3, [r0], #4
 
-/* These function enable and disable IRQ and FIQ interrupts by toggling
- * either the 6-th or 7-th bit of CPSR to 0 or 1 respectively.
- */
+    /* Check if we have reached the end of the table */
+    cmp r1, r2
+    bne l0
+    
+    /* Return */
+    mov pc, lr
 
+/* Allow linker access */
 .global int_enable_irq
 .global int_unable_irq
 .global int_enable_fiq
 .global int_unable_fiq
-	
-int_enable_irq:      mrs   r0,   cpsr              @ get USR mode CPSR
-                     bic   r0, r0, #0x80           @  enable IRQ interrupts
-                     msr   cpsr_c, r0              @ set USR mode CPSR
-        
-                     mov   pc, lr                  @ return
 
-int_unable_irq:      mrs   r0,   cpsr              @ get USR mode CPSR
-                     orr   r0, r0, #0x80           @ disable IRQ interrupts
-                     msr   cpsr_c, r0              @ set USR mode CPSR
-        
-                     mov   pc, lr                  @ return
+/* Enable IRQ interrupts */
+int_enable_irq:
+    /* Clear IRQ mask bit in CPSR */
+    mrs r0, cpsr
+    bic r0, r0, #0x80
+    msr cpsr_c, r0
+    
+    /* Return */
+    mov pc, lr
 
-int_enable_fiq:      mrs   r0,   cpsr              @ get USR mode CPSR
-                     bic   r0, r0, #0x40           @  enable FIQ interrupts
-                     msr   cpsr_c, r0              @ set USR mode CPSR
-        
-                     mov   pc, lr                  @ return
+/* Disable IRQ interrupts */
+int_unable_irq:
+    /* Set IRQ mask bit in CPSR */
+    mrs r0, cpsr
+    orr r0, r0, #0x80
+    msr cpsr_c, r0
 
-int_unable_fiq:      mrs   r0,   cpsr              @ get USR mode CPSR
-                     orr   r0, r0, #0x40           @ disable FIQ interrupts
-                     msr   cpsr_c, r0              @ set USR mode CPSR
-        
-                     mov   pc, lr                  @ return
+    /* Return */
+    mov pc, lr
+
+/* Enable FIQ interrupts */
+int_enable_fiq:
+    /* Clear FIQ mask bit in CPSR */
+    mrs r0, cpsr
+    bic r0, r0, #0x40
+    msr cpsr_c, r0
+
+    /* Return */
+    mov pc, lr
+
+/* Disable FIQ interrupts */
+int_unable_fiq:
+    /* Set FIQ mask bit in CPSR */
+    mrs r0, cpsr
+    orr r0, r0, #0x40
+    msr cpsr_c, r0
+
+    /* Return */
+    mov pc, lr

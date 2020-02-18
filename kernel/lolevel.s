@@ -1,41 +1,52 @@
-/* Copyright (C) 2017 Daniel Page <csdsp@bristol.ac.uk>
- *
- * Use of this source code is restricted per the CC BY-NC-ND license, a copy of 
- * which can be found via http://creativecommons.org (and should be included as 
- * LICENSE.txt within the associated archive or repository).
- */
-
-/* Each of the following is a low-level interrupt handler: each one is
- * tasked with handling a different interrupt type, and acts as a sort
- * of wrapper around a high-level, C-based handler.
- */
-
+/* Make symbols available to linker */
 .global lolevel_handler_rst
 .global lolevel_handler_irq
 .global lolevel_handler_svc
 
-lolevel_handler_rst: bl    int_init                @ initialise interrupt vector table
+/* Handle reset interrupt */
+lolevel_handler_rst:
+    /* Copy IVT to correct address */
+    bl int_init
 
-                     msr   cpsr, #0xD2             @ enter IRQ mode with IRQ and FIQ interrupts disabled
-                     ldr   sp, =tos_irq            @ initialise IRQ mode stack
-                     msr   cpsr, #0xD3             @ enter SVC mode with IRQ and FIQ interrupts disabled
-                     ldr   sp, =tos_svc            @ initialise SVC mode stack
+    /* Initialise stack for IRQ and SVC modes (#0xD2, #0xD3 respectively) */
+    msr cpsr, #0xD2
+    ldr sp, =tos_irq
+    msr cpsr, #0xD3
+    ldr sp, =tos_svc
+    
+    /* Call the C code */
+    bl hilevel_handler_rst
 
-                     bl    hilevel_handler_rst     @ invoke high-level C function
-                     b     .                       @ halt
+    /* Halt execution */
+    b .
 
-lolevel_handler_irq: sub   lr, lr, #4              @ correct return address
-                     stmfd sp!, { r0-r3, ip, lr }  @ save    caller-save registers
+/* Handle IRQ interrupt */
+lolevel_handler_irq:
+    /* Correct return address (lr should point to the instruction we were executing rather than returning to the next instruction) */
+    sub lr, lr, #4
 
-                     bl    hilevel_handler_irq     @ invoke high-level C function
+    /* Push args, ip, lr onto stack (descending), update sp so that it points to most recently pushed item (lr) */
+    stmfd sp!, {r0-r3, ip, lr}
+ 
+    /* Call the C code */
+    bl hilevel_handler_irq
 
-                     ldmfd sp!, { r0-r3, ip, lr }  @ restore caller-save registers
-                     movs  pc, lr                  @ return from interrupt
+    /* Pop args, ip, lr off of stack (descending), update sp so that it points to last entry */
+    ldmfd sp!, {r0-r3, ip, lr}
 
-lolevel_handler_svc: sub   lr, lr, #0              @ correct return address
-                     stmfd sp!, { r0-r3, ip, lr }  @ save    caller-save registers
+    /* Return from interrupt */
+    movs pc, lr
 
-                     bl    hilevel_handler_svc     @ invoke high-level C function
+/* Handle SVC interrupt */
+lolevel_handler_svc:
+    /* Push args, ip, lr onto stack (descending), update sp so that it points to most recently pushed item (lr) */
+    stmfd sp!, {r0-r3, ip, lr}
 
-                     ldmfd sp!, { r0-r3, ip, lr }  @ restore caller-save registers
-                     movs  pc, lr                  @ return from interrupt 
+    /* Call the C code */
+    bl hilevel_handler_svc
+
+    /* Pop args, ip, lr off of stack (descending), update sp so that it points to last entry */
+    ldmfd sp!, {r0-r3, ip, lr}
+
+    /* Return from interrupt */
+    movs pc, lr
