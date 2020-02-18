@@ -28,4 +28,12 @@ SECTIONS {
     /* Allocate stack for svc mode */
     . = . + 0x1000;  
     tos_svc = .;
+
+    /* Allocate stack for P3 */
+    . = . + 0x1000;
+    tos_P3 = .;
+
+    /* Allocate stack for P4 */
+    . = . + 0x1000;
+    tos_P4 = .;
 }
