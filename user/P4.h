@@ -7,4 +7,6 @@
 
 #include "libc.h"
 
+void main_P4();
+
 #endif

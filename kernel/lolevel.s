@@ -14,39 +14,74 @@ lolevel_handler_rst:
     msr cpsr, #0xD3
     ldr sp, =tos_svc
     
+    /* Create an initial placeholder 'context', with a size of 17 words (1 per register available in usr mode), on the stack */
+    sub sp, sp, #68
+
+    /* Pass the context to the high level code (R0 is in accordance with AAPCS) */
+    mov r0, sp
+
     /* Call the C code */
     bl hilevel_handler_rst
 
-    /* Halt execution */
-    b .
+    /* Execute initial process */
+    /* Load process mode to spsr and process pc to lr */
+    ldmia sp!, {r0, lr}
+    msr spsr, r0
+    
+    /* Restore USR mode registers for process */
+    ldmia sp, {r0-r12, sp, lr}^
+    add sp, sp, #60    
+
+    /* Execute process */
+    movs pc, lr
 
 /* Handle IRQ interrupt */
 lolevel_handler_irq:
     /* Correct return address (lr should point to the instruction we were executing rather than returning to the next instruction) */
     sub lr, lr, #4
 
-    /* Push args, ip, lr onto stack (descending), update sp so that it points to most recently pushed item (lr) */
-    stmfd sp!, {r0-r3, ip, lr}
- 
+    /* Save current process context onto stack ready to be switched out */
+    sub sp, sp, #60
+    stmia sp, {r0-r12, sp, lr}^
+    mrs r0, spsr
+    stmdb sp!, {r0, lr}
+
+    /* Pass the context pointer to the high level handler */
+    mov r0, sp
+
     /* Call the C code */
     bl hilevel_handler_irq
 
-    /* Pop args, ip, lr off of stack (descending), update sp so that it points to last entry */
-    ldmfd sp!, {r0-r3, ip, lr}
+    /* Restore the new switched-in context from the stack */
+    ldmia sp!, {r0, lr}
+    msr spsr, r0
+    ldmia sp, {r0-r12, sp, lr}^
+    add sp, sp, #60
 
     /* Return from interrupt */
     movs pc, lr
 
 /* Handle SVC interrupt */
 lolevel_handler_svc:
-    /* Push args, ip, lr onto stack (descending), update sp so that it points to most recently pushed item (lr) */
-    stmfd sp!, {r0-r3, ip, lr}
-
+    /* Save current process context onto stack */
+    sub sp, sp, #60
+    stmia sp, {r0-r12, sp, lr}^
+    mrs r0, spsr
+    stmdb sp!, {r0, lr}
+    
+    /* Setup args for hi-level function */
+    mov r0, sp
+    ldr r1, [lr, #-4]
+    bic r1, #0xFF000000
+    
     /* Call the C code */
     bl hilevel_handler_svc
 
-    /* Pop args, ip, lr off of stack (descending), update sp so that it points to last entry */
-    ldmfd sp!, {r0-r3, ip, lr}
+    /* Restore the context from the stack */
+    ldmia sp!, {r0, lr}
+    msr spsr, r0
+    ldmia sp, {r0-r12, sp, lr}^
+    add sp, sp, #60
 
     /* Return from interrupt */
     movs pc, lr
