@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 // Size of process table
 #define MAX_PROCS (2)
@@ -36,7 +37,23 @@ typedef struct {
     pcb_t table[MAX_PROCS];
 } ptable_t;
 
+// Process queue node
+typedef struct pqnode_t {
+    pcb_t* data;
+    struct pqnode_t* next;
+} pqnode_t;
+
+// Process queue
+typedef struct {
+    pqnode_t* head;
+    pqnode_t* tail;
+} pqueue_t;
+
 // Function declarations
 pcb_t createPCB(void* entryPoint, uint32_t ptos);
+pqueue_t* createQ();
+void freeQ(pqueue_t* q);
+void addQ(pqueue_t* q, pcb_t* pcb, pstate_t state);
+pcb_t* removeQ(pqueue_t* q, pstate_t state);
 
 #endif

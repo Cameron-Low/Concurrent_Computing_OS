@@ -1,8 +1,9 @@
 #include "ptable.h"
 
-// Store the value of the next pid.
+// Store the value of the next pid
 int nextId = 0;
 
+// Create a new PCB for a process
 pcb_t createPCB(void* entryPoint, uint32_t ptos) {
     pcb_t pcb;
 
@@ -37,3 +38,54 @@ pcb_t createPCB(void* entryPoint, uint32_t ptos) {
     return pcb;
 }
 
+// Create a process queue
+pqueue_t* createQ() {
+    pqueue_t* q = malloc(sizeof(pqueue_t));
+    q->head = NULL;
+    q->tail = NULL;
+    return q;
+}
+
+// Free a process queue
+void freeQ(pqueue_t* q) {
+    if (q->head != NULL) {
+        pqnode_t* prev = q->head;
+        pqnode_t* cur = prev->next;
+        while (cur->next != NULL) {
+            free(prev);
+            prev = cur;
+            cur = cur->next;
+        }
+        free(cur);
+    }
+    free(q);
+}
+
+// Add pcb to process queue
+void addQ(pqueue_t* q, pcb_t* pcb, pstate_t state) {
+    pcb->pstate = state;
+    pqnode_t* node = malloc(sizeof(pqnode_t));
+    node->data = pcb;
+    node->next = NULL;
+    if (q->head == NULL) {
+        q->head = node;
+        q->tail = node;
+    } else {
+        q->tail->next = node;
+        q->tail = node;
+    }
+}
+
+// Remove the head of the queue
+pcb_t* removeQ(pqueue_t* q, pstate_t state) {
+    if (q->head == NULL) {
+        return NULL;
+    } else {
+        pqnode_t* node = q->head;
+        pcb_t* pcb = node->data;
+        pcb->pstate = state;
+        q->head = node->next;
+        free(node);
+        return pcb;
+    }
+}
