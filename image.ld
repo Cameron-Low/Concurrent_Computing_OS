@@ -18,6 +18,14 @@ SECTIONS {
         *(.bss)
     }
 
+    /* Setup kernel heap */
+    .heap : {
+        end = .;
+        _heap_start = .;
+        . = . + 0x1000;
+        _heap_end = .;
+    }
+
     /* Align address (per AAPCS) */
     . = ALIGN(8);
 

@@ -3,39 +3,33 @@
 // Process table
 ptable_t ptable;
 
+// Ready queue
+pqueue_t* readyq = NULL;
+
 // Currently running process
 pcb_t* running = NULL;
 
 // Perform a context switch
 void dispatch(ctx_t* ctx, pcb_t* current, pcb_t* new) {
-    // If there was a program running, save it's context and move it to the ready queue
+    // If there was a program running, save it's context
     if (current != NULL) {
         memcpy(&current->ctx, ctx, sizeof(ctx_t));
-        current->pstate = READY;
     }
 
-    // If we have a new process then perform a context switch and remove process from ready queue
+    // If we have a new process then perform a context switch
     if (new != NULL) {
         memcpy(ctx, &new->ctx, sizeof(ctx_t));
-        new->pstate = RUNNING;
     }
 
+    // Update the running process
     running = new;
 }
 
 // Pick the next process to execute from the ready queue
 void schedule(ctx_t* ctx) {
-    // Find the running process in the process table and dispatch the next ready process
-    for (int n = 0; n < MAX_PROCS; n++) {
-        if (ptable.table[n].pid == running->pid) {
-            // Wrap around the process table
-            int next = n+1 == MAX_PROCS ? 0 : n+1;
-
-            // Dispatch next process
-            dispatch(ctx, running, &ptable.table[next]);
-            return;
-        }
-    }
+    // Move the running process into the ready queue
+    addQ(readyq, running, READY);
+    dispatch(ctx, running, removeQ(readyq, RUNNING));
 }
 
 // Hi-level code for handling RST interrupts
@@ -54,12 +48,18 @@ void hilevel_handler_rst(ctx_t* ctx) {
     ptable.table[0] = createPCB(&main_P3, tos_P3);
     ptable.table[1] = createPCB(&main_P4, tos_P4);
 
+    // Initialise the ready queue
+    if (readyq != NULL) {
+        freeQ(readyq);
+    }
+    readyq = createQ();
+
     // Add the PCBs to the ready queue
-    ptable.table[0].pstate = READY;
-    ptable.table[1].pstate = READY;
+    addQ(readyq, &ptable.table[0], READY);
+    addQ(readyq, &ptable.table[1], READY);
 
     // Dispatch 0th PCB entry by default
-    dispatch(ctx, NULL, &ptable.table[0]);
+    dispatch(ctx, NULL, removeQ(readyq, RUNNING));
     
     // Remove IRQ interrupt mask
     int_enable_irq();
