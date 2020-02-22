@@ -3,11 +3,20 @@
 // Process table
 ptable_t ptable;
 
-// Ready queue
-pqueue_t* readyq = NULL;
+// Multi-level feedback queue (0 is highest priority)
+pqueue_t* multiq[PRIORITY_LEVLS];
 
 // Currently running process
 pcb_t* running = NULL;
+
+// Time quantum counter
+int tqc = 0;
+
+// Add to the correct pcb to correct priority ready queue
+void addRQ(pcb_t* pcb) {
+    pcb->timeslice = exp2(pcb->priority);
+    addQ(multiq[pcb->priority], pcb, READY);
+}
 
 // Perform a context switch
 void dispatch(ctx_t* ctx, pcb_t* current, pcb_t* new) {
@@ -27,9 +36,21 @@ void dispatch(ctx_t* ctx, pcb_t* current, pcb_t* new) {
 
 // Pick the next process to execute from the ready queue
 void schedule(ctx_t* ctx) {
-    // Move the running process into the ready queue
-    addQ(readyq, running, READY);
-    dispatch(ctx, running, removeQ(readyq, RUNNING));
+    // If the process used all its time quantum then lower priority otherwise raise it
+    if (tqc == running->timeslice) {
+        running->priority = running->priority + 1 == PRIORITY_LEVLS ? running->priority : running->priority + 1;
+    } else {
+        running->priority = running->priority - 1 == -1 ? running->priority : running->priority - 1;
+    }
+    addRQ(running);
+    
+    // Schedule the new process
+    for (int i = 0; i < PRIORITY_LEVLS; i++) {
+        if (multiq[i]->head != NULL) {
+            dispatch(ctx, running, removeQ(multiq[i], RUNNING));
+            return;
+        }    
+    }
 }
 
 // Hi-level code for handling RST interrupts
@@ -49,17 +70,19 @@ void hilevel_handler_rst(ctx_t* ctx) {
     ptable.table[1] = createPCB(&main_P4, tos_P4);
 
     // Initialise the ready queue
-    if (readyq != NULL) {
-        freeQ(readyq);
+    for (int i = 0; i < PRIORITY_LEVLS; i++) {
+        if (multiq[i] != NULL) {
+            freeQ(multiq[i]);
+        }
+        multiq[i] = createQ();
     }
-    readyq = createQ();
 
     // Add the PCBs to the ready queue
-    addQ(readyq, &ptable.table[0], READY);
-    addQ(readyq, &ptable.table[1], READY);
+    addRQ(&ptable.table[0]);
+    addRQ(&ptable.table[1]);
 
     // Dispatch 0th PCB entry by default
-    dispatch(ctx, NULL, removeQ(readyq, RUNNING));
+    dispatch(ctx, NULL, removeQ(multiq[ptable.table[0].priority], RUNNING));
     
     // Remove IRQ interrupt mask
     int_enable_irq();
@@ -76,8 +99,12 @@ void hilevel_handler_irq(ctx_t* ctx) {
             // Clear the interrupt from the timer
             TIMER0->Timer1IntClr = 0x1;                        
 
-            // Call scheduler
-            schedule(ctx);
+            // Call scheduler if the time quantum has been used
+            tqc += 1;
+            if (tqc == running->timeslice) {
+                schedule(ctx);
+                tqc = 0;
+            }
         }
     }
 
@@ -111,4 +138,14 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             break;
         }
     }
+}
+
+// Helpers - May be moved??
+
+int exp2(int val) {
+    int out = 1;
+    for (int i = 0; i < val; i++) {
+        out = out * 2;
+    }
+    return out;
 }

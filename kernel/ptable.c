@@ -12,6 +12,10 @@ pcb_t createPCB(void* entryPoint, uint32_t ptos) {
 
     // Update process state
     pcb.pstate = CREATED;
+    
+    // Give the process an initial priority of 0
+    pcb.priority = 0;
+    pcb.timeslice = 0;
 
     // Set the top of the process's stack
     pcb.ptos = (uint32_t) &ptos;

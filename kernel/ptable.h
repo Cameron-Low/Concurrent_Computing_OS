@@ -9,6 +9,7 @@
 
 // Size of process table
 #define MAX_PROCS (2)
+#define PRIORITY_LEVLS (3)
 
 // Context for process
 typedef struct {
@@ -30,6 +31,8 @@ typedef struct {
     pstate_t pstate;
     ctx_t ctx;
     uint32_t ptos;
+    int priority;
+    int timeslice;
 } pcb_t;
 
 // Process table containing MAX_PROCS PCB entries

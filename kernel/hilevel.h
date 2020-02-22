@@ -26,5 +26,7 @@ extern uint32_t tos_P3;
 void* main_P4;
 extern uint32_t tos_P4;
 
+// Function declarations
+int exp2(int val);
 
 #endif
