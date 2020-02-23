@@ -1,60 +1,52 @@
 #include "ptable.h"
 
 // Store the value of the next pid
-int nextId = 0;
+int nextId = 1;
 
 // Create a new PCB for a process
-pcb_t createPCB(void* entryPoint, uint32_t ptos) {
-    pcb_t pcb;
-
+pcb_t* createPCB(uint32_t entryPoint, uint32_t ptos) {
+    pcb_t* pcb = malloc(sizeof(pcb_t));
     // Assign the process an id
-    pcb.pid = nextId++;
-
+    pcb->pid = nextId++;
+    // Initialise the child process array
+    for (int i = 0; i < MAX_PROCS; i++) {
+        pcb->child_pids[i] = 0;
+    }
     // Update process state
-    pcb.pstate = CREATED;
-    
+    pcb->pstate = CREATED;
     // Give the process an initial priority of 0
-    pcb.priority = 0;
-    pcb.timeslice = 0;
-
+    pcb->priority = 0;
+    pcb->timeslice = 0;
     // Set the top of the process's stack
-    pcb.ptos = (uint32_t) &ptos;
-
-    // Initialise the context
-
+    pcb->ptos = (uint32_t) &ptos;
     // Set cpsr to usr mode
-    pcb.ctx.cpsr = 0x50;
-
+    pcb->ctx.cpsr = 0x50;
     // Set pc to beginning of process
-    pcb.ctx.pc = (uint32_t) entryPoint;
-
+    pcb->ctx.pc = entryPoint;
     // Initialise general purpose registers
     for (int i = 0; i < 13; i++) {
-        pcb.ctx.gpr[i] = 0;
+        pcb->ctx.gpr[i] = 0;
     }
-
     // Initialise the stack pointer to the top of the allocated stack for this process
-    pcb.ctx.sp = pcb.ptos;
-    
+    pcb->ctx.sp = pcb->ptos;
     // Initialise the link register
-    pcb.ctx.lr = 0;
-
+    pcb->ctx.lr = 0;
     return pcb;
 }
 
-// Create a process queue
-pqueue_t* createQ() {
-    pqueue_t* q = malloc(sizeof(pqueue_t));
-    q->head = NULL;
-    q->tail = NULL;
-    return q;
+// Create a process list
+plist_t* createL() {
+    plist_t* l = malloc(sizeof(plist_t));
+    l->head = NULL;
+    l->tail = NULL;
+    return l;
 }
 
-// Free a process queue
-void freeQ(pqueue_t* q) {
-    if (q->head != NULL) {
-        pqnode_t* prev = q->head;
-        pqnode_t* cur = prev->next;
+// Free a process list
+void freeL(plist_t* l) {
+    if (l->head != NULL) {
+        pnode_t* prev = l->head;
+        pnode_t* cur = prev->next;
         while (cur->next != NULL) {
             free(prev);
             prev = cur;
@@ -62,34 +54,68 @@ void freeQ(pqueue_t* q) {
         }
         free(cur);
     }
-    free(q);
+    free(l);
 }
 
-// Add pcb to process queue
-void addQ(pqueue_t* q, pcb_t* pcb, pstate_t state) {
+// Add process to end of list
+void pushL(plist_t* l, pcb_t* pcb, pstate_t state) {
     pcb->pstate = state;
-    pqnode_t* node = malloc(sizeof(pqnode_t));
+    pnode_t* node = malloc(sizeof(pnode_t));
     node->data = pcb;
     node->next = NULL;
-    if (q->head == NULL) {
-        q->head = node;
-        q->tail = node;
+    if (l->head == NULL) {
+        l->head = node;
+        l->tail = node;
     } else {
-        q->tail->next = node;
-        q->tail = node;
+        l->tail->next = node;
+        l->tail = node;
     }
 }
 
-// Remove the head of the queue
-pcb_t* removeQ(pqueue_t* q, pstate_t state) {
-    if (q->head == NULL) {
+// Pop the first node in the list
+pcb_t* popL(plist_t* l, pstate_t state) {
+    if (l->head == NULL) {
         return NULL;
     } else {
-        pqnode_t* node = q->head;
+        pnode_t* node = l->head;
         pcb_t* pcb = node->data;
         pcb->pstate = state;
-        q->head = node->next;
+        l->head = node->next;
         free(node);
         return pcb;
     }
+}
+
+// Delete a process from a list
+void deleteL(plist_t* l, int pid, int clear) {
+    // Check if the list is empty
+    if (l->head == NULL) {
+        return;
+    }
+    // Find the node with our process
+    pnode_t* prev = NULL;
+    pnode_t* cur = l->head;
+    while (cur->data->pid != pid) {
+        prev = cur;
+        cur = cur->next;
+        if (cur == NULL) {
+            return;
+        }
+    }
+    
+    // Perform a clean deletion
+    if (cur == l->head) {
+        l->head = cur->next;
+    } else if (cur == l->tail) {
+        l->tail = prev;
+        prev->next = NULL;
+    } else {
+        prev->next = cur->next;
+    }
+
+    // Free the space used by the node
+    if (clear) {
+        free(cur->data);
+    }
+    free(cur);
 }

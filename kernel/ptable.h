@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 // Size of process table
-#define MAX_PROCS (2)
+#define MAX_PROCS (10)
 #define PRIORITY_LEVLS (3)
 
 // Context for process
@@ -29,34 +29,31 @@ typedef enum {
 typedef struct {
     int pid;
     pstate_t pstate;
+    int child_pids[MAX_PROCS];
     ctx_t ctx;
     uint32_t ptos;
     int priority;
     int timeslice;
 } pcb_t;
 
-// Process table containing MAX_PROCS PCB entries
-typedef struct {
-    pcb_t table[MAX_PROCS];
-} ptable_t;
-
-// Process queue node
-typedef struct pqnode_t {
+// Process list node
+typedef struct pnode_t {
     pcb_t* data;
-    struct pqnode_t* next;
-} pqnode_t;
+    struct pnode_t* next;
+} pnode_t;
 
-// Process queue
+// Process linked list
 typedef struct {
-    pqnode_t* head;
-    pqnode_t* tail;
-} pqueue_t;
+    pnode_t* head;
+    pnode_t* tail;
+} plist_t;
 
 // Function declarations
-pcb_t createPCB(void* entryPoint, uint32_t ptos);
-pqueue_t* createQ();
-void freeQ(pqueue_t* q);
-void addQ(pqueue_t* q, pcb_t* pcb, pstate_t state);
-pcb_t* removeQ(pqueue_t* q, pstate_t state);
+pcb_t* createPCB(uint32_t entryPoint, uint32_t ptos);
+plist_t* createL();
+void freeL(plist_t* q);
+void pushL(plist_t* q, pcb_t* pcb, pstate_t state);
+pcb_t* popL(plist_t* q, pstate_t state);
+void deleteL(plist_t* q, int pid, int clear_data);
 
 #endif

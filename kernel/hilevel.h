@@ -21,10 +21,14 @@
 
 // Include automatic startup programs and their associated stacks
 
+void* main_console;
 void* main_P3;
-extern uint32_t tos_P3;
 void* main_P4;
+void* main_P5;
+extern uint32_t tos_Console;
+extern uint32_t tos_P3;
 extern uint32_t tos_P4;
+extern uint32_t tos_P5;
 
 // Function declarations
 int exp2(int val);

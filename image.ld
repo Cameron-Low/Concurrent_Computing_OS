@@ -37,6 +37,10 @@ SECTIONS {
     . = . + 0x1000;  
     tos_svc = .;
 
+    /* Allocate stack for console */
+    . = . + 0x1000;
+    tos_Console = .;
+
     /* Allocate stack for P3 */
     . = . + 0x1000;
     tos_P3 = .;
@@ -44,4 +48,8 @@ SECTIONS {
     /* Allocate stack for P4 */
     . = . + 0x1000;
     tos_P4 = .;
+
+    /* Allocate stack for P5 */
+    . = . + 0x1000;
+    tos_P5 = .;
 }
