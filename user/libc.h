@@ -38,6 +38,7 @@ typedef int pid_t;
 #define SYS_EXEC      ( 0x05 )
 #define SYS_KILL      ( 0x06 )
 #define SYS_NICE      ( 0x07 )
+#define SYS_SEM_INIT  ( 0x08 )
 
 #define SIG_TERM      ( 0x00 )
 #define SIG_QUIT      ( 0x01 )
@@ -74,4 +75,9 @@ extern int  kill( pid_t pid, int x );
 // for process identified by pid, set  priority to x
 extern void nice( pid_t pid, int x );
 
+uint32_t* sem_init();
+void sem_post(uint32_t* s);
+void sem_wait(uint32_t* s);
+void print(char* s);
+void printI(int i);
 #endif

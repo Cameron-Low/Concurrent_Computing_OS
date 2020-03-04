@@ -81,6 +81,9 @@ pcb_t* popL(plist_t* l, pstate_t state) {
         pcb_t* pcb = node->data;
         pcb->pstate = state;
         l->head = node->next;
+        if (node->next == NULL) {
+            l->tail = NULL;
+        }
         free(node);
         return pcb;
     }
@@ -105,6 +108,9 @@ void deleteL(plist_t* l, int pid, int clear) {
     
     // Perform a clean deletion
     if (cur == l->head) {
+        if (cur->next == NULL) {
+            l->tail = NULL;
+        }
         l->head = cur->next;
     } else if (cur == l->tail) {
         l->tail = prev;

@@ -52,4 +52,8 @@ SECTIONS {
     /* Allocate stack for P5 */
     . = . + 0x1000;
     tos_P5 = .;
+
+    /* Allocate stack for Dining */
+    . = . + 0x1000000;
+    tos_Dining = .;
 }

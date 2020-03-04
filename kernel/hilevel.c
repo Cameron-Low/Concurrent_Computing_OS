@@ -38,14 +38,16 @@ void dispatch(ctx_t* ctx, pcb_t* current, pcb_t* new) {
 
 // Pick the next process to execute from the ready queue
 void schedule(ctx_t* ctx) {
-    // If the process used all its time quantum then lower priority otherwise raise it
-    if (tqc == running->timeslice) {
-        running->priority = running->priority + 1 == PRIORITY_LEVLS ? running->priority : running->priority + 1;
+    if (running != NULL) {
+        // If the process used all its time quantum then lower priority otherwise raise it
+        if (tqc >= running->timeslice) {
+            running->priority = running->priority + 1 == PRIORITY_LEVLS ? running->priority : running->priority + 1;
+        } else {
+            running->priority = running->priority - 1 == -1 ? running->priority : running->priority - 1;
+        }
         addRQ(running);
-    } else {
-        running->priority = running->priority - 1 == -1 ? running->priority : running->priority - 1;
     }
-    
+    tqc = 0;
     // Schedule the new process
     for (int i = 0; i < PRIORITY_LEVLS; i++) {
         if (multiq[i]->head != NULL) {
@@ -83,7 +85,7 @@ void hilevel_handler_rst(ctx_t* ctx) {
     addRQ(ptable->head->data);
 
     // Dispatch 0th PCB entry by default
-    dispatch(ctx, NULL, popL(multiq[ptable->head->data->priority], RUNNING));
+    dispatch(ctx, NULL, popL(multiq[0], RUNNING));
     
     // Remove IRQ interrupt mask
     int_enable_irq();
@@ -97,15 +99,14 @@ void hilevel_handler_irq(ctx_t* ctx) {
     switch(id) {
         case GIC_SOURCE_TIMER0: {
             //PL011_putc(UART0, 'T', 1);
-            // Clear the interrupt from the timer
-            TIMER0->Timer1IntClr = 0x1;                        
-
             // Call scheduler if the time quantum has been used
             tqc += 1;
             if (tqc == running->timeslice) {
                 schedule(ctx);
-                tqc = 0;
             }
+
+            // Clear the interrupt from the timer
+            TIMER0->Timer1IntClr = 0x1;                        
         }
     }
 
@@ -180,6 +181,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             deleteL(ptable, running->pid, 1);
 
             // Schedule a new process
+            running = NULL;
             schedule(ctx);
             break;
         }
@@ -196,6 +198,8 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                 tos = (uint32_t) &tos_P4; 
             } else if (addr == (uint32_t) &main_P5) {
                 tos = (uint32_t) &tos_P5; 
+            } else if (addr == (uint32_t) &main_dining) {
+                tos = (uint32_t) &tos_Dining; 
             }
 
             // Overload the process with the new program
@@ -225,7 +229,14 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         }
         // Handle the nice system call
         case 0x07: {
-                
+            break; 
+        }
+        // Handle the sem_init system call
+        case 0x08: {
+            uint32_t* sem = malloc(sizeof(uint32_t));
+            *sem = 1;
+            ctx->gpr[0] = (uint32_t) sem;
+            break;           
         }
     }
 }

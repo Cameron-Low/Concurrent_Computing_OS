@@ -1,55 +1,58 @@
-/* Copyright (C) 2017 Daniel Page <csdsp@bristol.ac.uk>
- *
- * Use of this source code is restricted per the CC BY-NC-ND license, a copy of 
- * which can be found via http://creativecommons.org (and should be included as 
- * LICENSE.txt within the associated archive or repository).
- */
-
 #include "libc.h"
 
-int  atoi( char* x        ) {
-  char* p = x; bool s = false; int r = 0;
+// String to int
+int atoi(char* x) {
+    char* p = x;
+    bool s = false;
+    int r = 0;
 
-  if     ( *p == '-' ) {
-    s =  true; p++;
-  }
-  else if( *p == '+' ) {
-    s = false; p++;
-  }
+    // Check the sign
+    if (*p == '-') {
+        s =  true;
+        p++;
+    } else if (*p == '+') {
+        s = false;
+        p++;
+    } else {
+        s = false;
+    }
 
-  for( int i = 0; *p != '\x00'; i++, p++ ) {
-    r = s ? ( r * 10 ) - ( *p - '0' ) :
-            ( r * 10 ) + ( *p - '0' ) ;
-  }
+    for (int i = 0; *p != '\x00'; i++, p++) {
+        r = s ? (r * 10) - (*p - '0') : (r * 10) + (*p - '0') ;
+    }
 
-  return r;
+    return r;
 }
 
-void itoa( char* r, int x ) {
-  char* p = r; int t, n;
+// Int to string
+void itoa(char* r, int x) {
+    char* p = r;
+    int t, n;
 
-  if( x < 0 ) {
-     p++; t = -x; n = t;
-  }
-  else {
-          t = +x; n = t;
-  }
+    if (x < 0) {
+        p++;
+        t = -x;
+        n = t;
+    } else {
+        t = +x;
+        n = t;
+    }
 
-  do {
-     p++;                    n /= 10;
-  } while( n );
+    do {
+        p++;
+        n /= 10;
+    } while (n);
 
-    *p-- = '\x00';
+    *p-- = '\0';
 
-  do {
-    *p-- = '0' + ( t % 10 ); t /= 10;
-  } while( t );
+    do {
+        *p-- = '0' + (t % 10);
+        t /= 10;
+    } while(t);
 
-  if( x < 0 ) {
-    *p-- = '-';
-  }
-
-  return;
+    if( x < 0 ) {
+        *p-- = '-';
+    }
 }
 
 void yield() {
@@ -146,4 +149,33 @@ void nice( int pid, int x ) {
               : "r0", "r1" );
 
   return;
+}
+
+uint32_t* sem_init() {
+    uint32_t* sem;
+    asm volatile( "svc %1     \n" // make system call SYS_YIELD
+                  "mov %0, r0 \n"
+              : "=r" (sem)
+              : "I" (SYS_SEM_INIT)
+              : );
+    return sem;
+}
+
+int strlen(char* str) {
+    int c = 0;
+    while (*str != '\0') {
+        c++;
+        str++;
+    }
+    return c;
+}
+
+void print(char* str) {
+    write(STDOUT_FILENO, str, strlen(str));
+}
+
+void printI(int i) {
+    char v[11];
+    itoa(v, i);
+    write(STDOUT_FILENO, v, strlen(v));
 }

@@ -12,6 +12,9 @@ uint32_t weight(uint32_t x) {
 
 void main_P3() {
     while (1) {
+        print("P3");
+        printI(1292929);
+        /*
         write(STDOUT_FILENO, "P3", 2);
 
         uint32_t lo = 1 << 8;
@@ -19,7 +22,7 @@ void main_P3() {
 
         for (uint32_t x = lo; x < hi; x++) {
           uint32_t r = weight(x); 
-        }
+        }*/
     }
 
     exit(EXIT_SUCCESS);
