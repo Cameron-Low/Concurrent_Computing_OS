@@ -75,7 +75,7 @@ extern int  kill( pid_t pid, int x );
 // for process identified by pid, set  priority to x
 extern void nice( pid_t pid, int x );
 
-uint32_t* sem_init();
+uint32_t* sem_init(int val);
 void sem_post(uint32_t* s);
 void sem_wait(uint32_t* s);
 void print(char* s);

@@ -1,14 +1,14 @@
 #include "dining.h"
-#define PHILOSOPHERS (2)
+#define PHILOSOPHERS (16)
 
 uint32_t* forks[PHILOSOPHERS];
 uint32_t* waiter;
 
 void main_dining() {
     for (int i = 0; i < PHILOSOPHERS; i++) {
-        forks[i] = sem_init();
+        forks[i] = sem_init(1);
     }
-    waiter = sem_init();
+    waiter = sem_init(1);
     for (int i = 0; i < PHILOSOPHERS; i++) {
         if (0 == fork()) {
             philosopher(i);

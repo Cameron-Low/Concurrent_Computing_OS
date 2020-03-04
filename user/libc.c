@@ -151,12 +151,13 @@ void nice( int pid, int x ) {
   return;
 }
 
-uint32_t* sem_init() {
+uint32_t* sem_init(int val) {
     uint32_t* sem;
-    asm volatile( "svc %1     \n" // make system call SYS_YIELD
+    asm volatile( "mov r0, %2 \n" // assign r0 = val
+                  "svc %1     \n" // make system call SYS_SEM_INIT
                   "mov %0, r0 \n"
               : "=r" (sem)
-              : "I" (SYS_SEM_INIT)
+              : "I" (SYS_SEM_INIT), "r" (val)
               : );
     return sem;
 }

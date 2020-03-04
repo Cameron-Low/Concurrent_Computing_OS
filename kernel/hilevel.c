@@ -12,8 +12,14 @@ pcb_t* running = NULL;
 // Time quantum counter
 int tqc = 0;
 
-// Add to the correct pcb to correct priority ready queue
-void addRQ(pcb_t* pcb) {
+// Get the address of the start of the stack for a given process
+uint32_t* get_stack(pcb_t* p) {
+    // Every process is given 4KiB of stack within the usr mode stack
+    return (uint32_t*) (((uint32_t) &tos_usr) + 0x1000 * p->pid);
+} 
+
+// Add pcb to correct priority ready queue
+void make_ready(pcb_t* pcb) {
     // Assign the process a time slice
     pcb->timeslice = exp2(pcb->priority);
     // Push to the ready queue
@@ -26,7 +32,6 @@ void dispatch(ctx_t* ctx, pcb_t* current, pcb_t* new) {
     if (current != NULL) {
         memcpy(&current->ctx, ctx, sizeof(ctx_t));
     }
-
     // If we have a new process then perform a context switch
     if (new != NULL) {
         memcpy(ctx, &new->ctx, sizeof(ctx_t));
@@ -39,15 +44,18 @@ void dispatch(ctx_t* ctx, pcb_t* current, pcb_t* new) {
 // Pick the next process to execute from the ready queue
 void schedule(ctx_t* ctx) {
     if (running != NULL) {
-        // If the process used all its time quantum then lower priority otherwise raise it
+        // If the process used all its time quantum then lower priority, otherwise raise it
         if (tqc >= running->timeslice) {
             running->priority = running->priority + 1 == PRIORITY_LEVLS ? running->priority : running->priority + 1;
         } else {
             running->priority = running->priority - 1 == -1 ? running->priority : running->priority - 1;
         }
-        addRQ(running);
+        // Add it to the correct ready queue
+        make_ready(running);
     }
+    // Rest the time counter ready for the next process
     tqc = 0;
+
     // Schedule the new process
     for (int i = 0; i < PRIORITY_LEVLS; i++) {
         if (multiq[i]->head != NULL) {
@@ -70,8 +78,11 @@ void hilevel_handler_rst(ctx_t* ctx) {
     GICD0->CTLR = 0x1;
 
     // Initialise process table with the console program
+    if (ptable != NULL) {
+        freeL(ptable);
+    }
     ptable = createL();
-    pushL(ptable, createPCB((uint32_t) &main_console, tos_Console), CREATED);
+    pushL(ptable, createPCB((uint32_t) &main_console, tos_usr, NULL), CREATED);
 
     // Initialise the ready queue
     for (int i = 0; i < PRIORITY_LEVLS; i++) {
@@ -82,7 +93,7 @@ void hilevel_handler_rst(ctx_t* ctx) {
     }
 
     // Add the PCB to the ready queue
-    addRQ(ptable->head->data);
+    make_ready(ptable->head->data);
 
     // Dispatch 0th PCB entry by default
     dispatch(ctx, NULL, popL(multiq[0], RUNNING));
@@ -159,13 +170,20 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         // Handle the fork system call
         case 0x03: {
             // Create the new child process as an exact duplicate of its parent
-            pcb_t* child = createPCB(ctx->pc, ctx->sp);
+            pcb_t* child = createPCB(ctx->pc, ctx->sp, running);
+            memcpy(&child->ctx, ctx, sizeof(ctx_t));
+
+            // Give the child it's own stack, copied from the parent.
+            uint32_t stack_offset = ((uint32_t) get_stack(running)) - ctx->sp;
+            child->ptos = (uint32_t) get_stack(child);
+            child->ctx.sp = child->ptos - stack_offset;
+            memcpy((uint32_t*) child->ctx.sp, (uint32_t*) ctx->sp, stack_offset);
+
             // Add it to the process table
             pushL(ptable, child, CREATED);
-            memcpy(&child->ctx, ctx, sizeof(ctx_t));
             
             // Add child to the ready queue
-            addRQ(child);
+            make_ready(child);
             
             // Set up return values for child and parent
             child->ctx.gpr[0] = 0;
@@ -190,21 +208,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             // Get address for program entry point
             uint32_t addr = ctx->gpr[0];
 
-            // Work out which process stack to assign to the program
-            uint32_t tos = 0;
-            if (addr == (uint32_t) &main_P3) {
-                tos = (uint32_t) &tos_P3; 
-            } else if (addr == (uint32_t) &main_P4) {
-                tos = (uint32_t) &tos_P4; 
-            } else if (addr == (uint32_t) &main_P5) {
-                tos = (uint32_t) &tos_P5; 
-            } else if (addr == (uint32_t) &main_dining) {
-                tos = (uint32_t) &tos_Dining; 
-            }
-
             // Overload the process with the new program
             ctx->pc = addr;
-            ctx->sp = tos;
+            // Reset the stack pointer
+            ctx->sp = running->ptos;
             break;
         }
         // Handle the kill system call
@@ -234,7 +241,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         // Handle the sem_init system call
         case 0x08: {
             uint32_t* sem = malloc(sizeof(uint32_t));
-            *sem = 1;
+            *sem = ctx->gpr[0];
             ctx->gpr[0] = (uint32_t) sem;
             break;           
         }

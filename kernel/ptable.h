@@ -26,10 +26,10 @@ typedef enum {
 } pstate_t;
 
 // Process Control Block (PCB)
-typedef struct {
+typedef struct pcb_t {
     int pid;
     pstate_t pstate;
-    int child_pids[MAX_PROCS];
+    struct pcb_t* parent;
     ctx_t ctx;
     uint32_t ptos;
     int priority;
@@ -49,7 +49,7 @@ typedef struct {
 } plist_t;
 
 // Function declarations
-pcb_t* createPCB(uint32_t entryPoint, uint32_t ptos);
+pcb_t* createPCB(uint32_t entryPoint, uint32_t ptos, pcb_t* parent);
 plist_t* createL();
 void freeL(plist_t* q);
 void pushL(plist_t* q, pcb_t* pcb, pstate_t state);

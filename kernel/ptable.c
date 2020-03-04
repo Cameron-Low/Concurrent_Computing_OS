@@ -1,17 +1,15 @@
 #include "ptable.h"
 
 // Store the value of the next pid
-int nextId = 1;
+int nextId = 0;
 
 // Create a new PCB for a process
-pcb_t* createPCB(uint32_t entryPoint, uint32_t ptos) {
+pcb_t* createPCB(uint32_t entryPoint, uint32_t ptos, pcb_t* parent) {
     pcb_t* pcb = malloc(sizeof(pcb_t));
     // Assign the process an id
     pcb->pid = nextId++;
-    // Initialise the child process array
-    for (int i = 0; i < MAX_PROCS; i++) {
-        pcb->child_pids[i] = 0;
-    }
+    // Set the parent
+    pcb->parent = parent;
     // Update process state
     pcb->pstate = CREATED;
     // Give the process an initial priority of 0

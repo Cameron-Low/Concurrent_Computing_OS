@@ -37,23 +37,9 @@ SECTIONS {
     . = . + 0x1000;  
     tos_svc = .;
 
-    /* Allocate stack for console */
-    . = . + 0x1000;
-    tos_Console = .;
-
-    /* Allocate stack for P3 */
-    . = . + 0x1000;
-    tos_P3 = .;
-
-    /* Allocate stack for P4 */
-    . = . + 0x1000;
-    tos_P4 = .;
-
-    /* Allocate stack for P5 */
-    . = . + 0x1000;
-    tos_P5 = .;
-
-    /* Allocate stack for Dining */
-    . = . + 0x1000000;
-    tos_Dining = .;
+    /* Allocate stack for usr mode */
+    /* We will split this into 4 KiB sections, 1 section will be given to each new process */
+    max_procs = 20;
+    . = . + 0x1000 * max_procs;
+    tos_usr = .;
 }
