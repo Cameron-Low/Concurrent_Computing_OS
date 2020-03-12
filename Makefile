@@ -20,7 +20,7 @@
  QEMU_DISPLAY     = -nographic -display none 
 #QEMU_DISPLAY     =            -display  sdl
 
- LINARO_PATH      = /opt/software/gcc-linaro-5.1-2015.08-x86_64_arm-eabi
+ LINARO_PATH      = /usr/local/gcc-linaro-x86_64_arm-eabi
  LINARO_PREFIX    = arm-eabi
 
 # part 2: build commands

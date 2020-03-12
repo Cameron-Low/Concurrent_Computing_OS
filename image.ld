@@ -13,7 +13,7 @@ SECTIONS {
         *(.data)
     }
 
-    /* Place bsssegment(s) */        
+    /* Place bss segment(s) */        
     .bss : {
         *(.bss)
     }
