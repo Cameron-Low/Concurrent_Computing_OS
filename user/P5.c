@@ -1,4 +1,4 @@
-#include "P5.h"
+#include "libc.h"
 
 int is_prime(uint32_t x) {
     if (!(x & 1) || (x < 2)) {
@@ -16,7 +16,7 @@ int is_prime(uint32_t x) {
 
 void main_P5() {
     for (int i = 0; i < 25; i++) {
-        write(STDOUT_FILENO, "P5", 2);
+        print("P5");
 
         uint32_t lo = 1 <<  8;
         uint32_t hi = 1 << 16;

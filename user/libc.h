@@ -1,35 +1,13 @@
-/* Copyright (C) 2017 Daniel Page <csdsp@bristol.ac.uk>
- *
- * Use of this source code is restricted per the CC BY-NC-ND license, a copy of 
- * which can be found via http://creativecommons.org (and should be included as 
- * LICENSE.txt within the associated archive or repository).
- */
-
 #ifndef __LIBC_H
 #define __LIBC_H
 
+// Standard includes
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
-// Define a type that that captures a Process IDentifier (PID).
-
-typedef int pid_t;
-
-/* The definitions below capture symbolic constants within these classes:
- *
- * 1. system call identifiers (i.e., the constant used by a system call
- *    to specify which action the kernel should take),
- * 2. signal identifiers (as used by the kill system call), 
- * 3. status codes for exit,
- * 4. standard file descriptors (e.g., for read and write system calls),
- * 5. platform-specific constants, which may need calibration (wrt. the
- *    underlying hardware QEMU is executed on).
- *
- * They don't *precisely* match the standard C library, but are intended
- * to act as a limited model of similar concepts.
- */
-
+// System call identifiers
 #define SYS_YIELD     ( 0x00 )
 #define SYS_WRITE     ( 0x01 )
 #define SYS_READ      ( 0x02 )
@@ -39,45 +17,70 @@ typedef int pid_t;
 #define SYS_KILL      ( 0x06 )
 #define SYS_NICE      ( 0x07 )
 #define SYS_SEM_INIT  ( 0x08 )
+#define SYS_SEM_CLOSE ( 0x09 )
+#define SYS_LIST_PROC ( 0x10 )
+#define SYS_OPEN      ( 0x11 )
+#define SYS_CLOSE     ( 0x12 )
 
+// Kill process signals
 #define SIG_TERM      ( 0x00 )
 #define SIG_QUIT      ( 0x01 )
 
+// Exit statuses
 #define EXIT_SUCCESS  ( 0 )
 #define EXIT_FAILURE  ( 1 )
 
+// Standard file descriptors
 #define  STDIN_FILENO ( 0 )
 #define STDOUT_FILENO ( 1 )
 #define STDERR_FILENO ( 2 )
 
-// convert ASCII string x into integer r
-extern int  atoi( char* x        );
-// convert integer x into ASCII string r
-extern void itoa( char* r, int x );
+// Convert ASCII string x into integer r
+int atoi(char* x);
+// Convert integer x into ASCII string r
+void itoa(char* r, int x);
 
-// cooperatively yield control of processor, i.e., invoke the scheduler
-extern void yield();
+// Cooperatively yield control of processor
+void yield();
 
-// write n bytes from x to   the file descriptor fd; return bytes written
-extern int write( int fd, const void* x, size_t n );
-// read  n bytes into x from the file descriptor fd; return bytes read
-extern int  read( int fd,       void* x, size_t n );
+// Write n bytes from x to the file descriptor fd; return bytes written
+int write(int fd, const void* x, size_t n);
+// Read n bytes into x from the file descriptor fd; return bytes read
+int read(int fd, void* x, size_t n);
+// Open a file at a given path, if it doesn't exist then create a new file.
+int open(char* pathname);
+// Close a file
+void close(int fd);
 
-// perform fork, returning 0 iff. child or > 0 iff. parent process
-extern int  fork();
-// perform exit, i.e., terminate process with status x
-extern void exit(       int   x );
-// perform exec, i.e., start executing program at address x
-extern void exec( const void* x );
+// Clone process, returning 0 iff. child or > 0 iff. parent process
+int fork();
+// Terminate current process
+void exit(int x);
+// Execute a new process at address x
+void exec(const void* x);
 
-// for process identified by pid, send signal of x
-extern int  kill( pid_t pid, int x );
-// for process identified by pid, set  priority to x
-extern void nice( pid_t pid, int x );
+// For process identified by pid, send signal of x (Use pid=-1 to send signal to all processes except the init process)
+int kill(int pid, int x);
+// For process identified by pid, set priority of x (Use pid=-1 to send signal to all processes except the init process)
+void nice(int pid, int x);
+// List all currently running processes 
+void list_procs();
 
+// Initialise a semaphore with a given value
 uint32_t* sem_init(int val);
+// Deallocate a semaphore
+void sem_close(uint32_t* s);
+
+// Increment a semaphore s
 void sem_post(uint32_t* s);
+// Decrement a semaphore s
 void sem_wait(uint32_t* s);
+
+// Print functions for strings and integers
 void print(char* s);
 void printI(int i);
+
+// Random number generation
+uint32_t rand();
+
 #endif

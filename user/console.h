@@ -1,24 +1,14 @@
-/* Copyright (C) 2017 Daniel Page <csdsp@bristol.ac.uk>
- *
- * Use of this source code is restricted per the CC BY-NC-ND license, a copy of 
- * which can be found via http://creativecommons.org (and should be included as 
- * LICENSE.txt within the associated archive or repository).
- */
-
 #ifndef __CONSOLE_H
 #define __CONSOLE_H
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
-#include <string.h>
-
-#include "PL011.h"
-
+// Include all standard system calls/library functions
 #include "libc.h"
 
+// Include functionality for printing back to the terminal window
+#include "PL011.h"
+
+// Useful constants
 #define MAX_CMD_CHARS ( 1024 )
-#define MAX_CMD_ARGS  (    2 )
+#define MAX_CMD_ARGS  ( 2 )
 
 #endif

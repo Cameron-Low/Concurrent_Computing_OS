@@ -1,60 +1,50 @@
-# Copyright (C) 2017 Daniel Page <csdsp@bristol.ac.uk>
-#
-# Use of this source code is restricted per the CC BY-NC-ND license, a copy of 
-# which can be found via http://creativecommons.org (and should be included as 
-# LICENSE.txt within the associated archive or repository).
+PROJECT_PATH = $(shell find . -mindepth 1 -maxdepth 1 -type d)
+PROJECT_SOURCES = $(shell find ${PROJECT_PATH} -name *.c -o -name *.s)
+PROJECT_HEADERS = $(shell find ${PROJECT_PATH} -name *.h             )
+PROJECT_OBJECTS = $(addsuffix .o, $(basename ${PROJECT_SOURCES}))
+PROJECT_TARGETS = image.elf image.bin
 
-# part 1: variables
+QEMU_PATH = /usr
+QEMU_GDB =        127.0.0.1:1234
+QEMU_UART = stdio
+QEMU_UART += telnet:127.0.0.1:1235,server
+QEMU_UART += telnet:127.0.0.1:1236,server
+QEMU_DISPLAY = -nographic -display none 
+#QEMU_DISPLAY = -display sdl
 
- PROJECT_PATH     = $(shell find . -mindepth 1 -maxdepth 1 -type d)
- PROJECT_SOURCES  = $(shell find ${PROJECT_PATH} -name *.c -o -name *.s)
- PROJECT_HEADERS  = $(shell find ${PROJECT_PATH} -name *.h             )
- PROJECT_OBJECTS  = $(addsuffix .o, $(basename ${PROJECT_SOURCES}))
- PROJECT_TARGETS  = image.elf image.bin
+LINARO_PATH = /usr/local/gcc-linaro-x86_64_arm-eabi
+LINARO_PREFIX = arm-eabi
 
- QEMU_PATH        = /usr
- QEMU_GDB         =        127.0.0.1:1234
- QEMU_UART        = stdio
- QEMU_UART       += telnet:127.0.0.1:1235,server
-#QEMU_UART       += telnet:127.0.0.1:1236,server
- QEMU_DISPLAY     = -nographic -display none 
-#QEMU_DISPLAY     =            -display  sdl
-
- LINARO_PATH      = /usr/local/gcc-linaro-x86_64_arm-eabi
- LINARO_PREFIX    = arm-eabi
-
-# part 2: build commands
-
-%.o   : %.s
-	@${LINARO_PATH}/bin/${LINARO_PREFIX}-as  $(addprefix -I , ${PROJECT_PATH} ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/include) -mcpu=cortex-a8                                       -g                            -o ${@} ${<}
-%.o   : %.c
+%.o: %.s
+	@${LINARO_PATH}/bin/${LINARO_PREFIX}-as  $(addprefix -I , ${PROJECT_PATH} ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/include) -mcpu=cortex-a8 -g -o ${@} ${<}
+%.o: %.c
 	@${LINARO_PATH}/bin/${LINARO_PREFIX}-gcc $(addprefix -I , ${PROJECT_PATH} ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/include) -mcpu=cortex-a8 -mabi=aapcs -ffreestanding -std=gnu99 -g -c -fomit-frame-pointer -O -o ${@} ${<}
 
-%.elf : ${PROJECT_OBJECTS}
+%.elf: ${PROJECT_OBJECTS}
 	@${LINARO_PATH}/bin/${LINARO_PREFIX}-ld  $(addprefix -L ,                 ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/lib    ) -T ${*}.ld -o ${@} ${^} -lc -lgcc
-%.bin : %.elf
+%.bin: %.elf
 	@${LINARO_PATH}/bin/${LINARO_PREFIX}-objcopy -O binary ${<} ${@}
 
-# part 3: targets
+.PRECIOUS : ${PROJECT_OBJECTS} ${PROJECT_TARGETS}
 
-.PRECIOUS   : ${PROJECT_OBJECTS} ${PROJECT_TARGETS}
+build: ${PROJECT_TARGETS}
 
-build       : ${PROJECT_TARGETS}
+run-qemu: ${PROJECT_TARGETS}
+	@${QEMU_PATH}/bin/qemu-system-arm -nodefaults -M realview-pb-a8 -m 512M ${QEMU_DISPLAY} $(addprefix -serial , ${QEMU_UART}) -kernel $(filter %.bin, ${PROJECT_TARGETS})
 
-launch-qemu : ${PROJECT_TARGETS}
+run-qemu-debug: ${PROJECT_TARGETS}
 	@${QEMU_PATH}/bin/qemu-system-arm -nodefaults -M realview-pb-a8 -m 512M ${QEMU_DISPLAY} -gdb tcp:${QEMU_GDB} $(addprefix -serial , ${QEMU_UART}) -S -kernel $(filter %.bin, ${PROJECT_TARGETS})
-
-launch-gdb  : ${PROJECT_TARGETS}
+	
+run-gdb: ${PROJECT_TARGETS}
 	@${LINARO_PATH}/bin/${LINARO_PREFIX}-gdb -ex "file $(filter %.elf, ${PROJECT_TARGETS})" -ex "target remote ${QEMU_GDB}"
 
-kill-qemu   :
+kill:
 	@-killall --quiet --user ${USER} qemu-system-arm
 
-kill-gdb    :
-	@-killall --quiet --user ${USER} ${LINARO_PREFIX}-gdb
-
-clean       :
+clean:
 	@rm -f core ${PROJECT_OBJECTS} ${PROJECT_TARGETS}
+
+# -gdb tcp:${QEMU_GDB}
 
 include Makefile.console
 include Makefile.disk

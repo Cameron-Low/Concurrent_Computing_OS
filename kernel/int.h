@@ -1,11 +1,6 @@
 #ifndef __INT_H
 #define __INT_H
 
-// Include some standard type definitions
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
 // Allow linker access to various functions.
 void int_init();
 

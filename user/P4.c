@@ -1,20 +1,18 @@
-#include "P4.h"
+#include "libc.h"
 
 uint32_t gcd(uint32_t x, uint32_t y) {
-  if (x == y) {
-    return x;
-  }
-  else if (x >  y) {
-    return gcd(x - y, y);
-  }
-  else if (x <  y) {
-    return gcd(x, y - x);
-  }
+    if (x == y) {
+        return x;
+    } else if (x >  y) {
+        return gcd(x - y, y);
+    } else if (x <  y) {
+        return gcd(x, y - x);
+    }
 }
 
 void main_P4() {
     while (1) {
-        write(STDOUT_FILENO, "P4", 2);
+        print("P4");
 
         uint32_t lo = 1 << 4;
         uint32_t hi = 1 << 8;

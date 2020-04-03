@@ -162,13 +162,50 @@ uint32_t* sem_init(int val) {
     return sem;
 }
 
-int strlen(char* str) {
-    int c = 0;
-    while (*str != '\0') {
-        c++;
-        str++;
+void sem_close(uint32_t* sem) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = sem
+                  "svc %0     \n" // make system call SYS_SEM_CLOSE
+              :
+              : "I" (SYS_SEM_CLOSE), "r" (sem)
+              : );
+}
+
+void list_procs() {
+    char** names;
+    int* ids;
+    int len;
+    asm volatile( "svc %3 \n" // make system call SYS_LIST_PROC
+                  "mov %0, r0 \n" // names = r0
+                  "mov %1, r1 \n" // ids = r1
+                  "mov %2, r2 \n" // len = r2
+                : "=r" (names), "=r" (ids), "=r" (len)
+                : "I" (SYS_LIST_PROC)
+                : );
+
+    print("Active PIDS\n");
+    for (int i = 0; i < len; i++) {
+        printI(ids[i]);
+        print("\n");
     }
-    return c;
+}
+
+int open(char* path) {
+    int fd;
+    asm volatile( "mov r0, %2 \n" // assign r0 = path
+                  "svc %1     \n" // make system call SYS_OPEN
+                  "mov %0, r0 \n" // fd = r0
+              : "=r" (fd)
+              : "I" (SYS_OPEN), "r" (path)
+              : );
+    return fd;
+}
+
+void close(int fd) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = fd
+                  "svc %0     \n" // make system call SYS_CLOSE
+              :
+              : "I" (SYS_CLOSE), "r" (fd)
+              : );
 }
 
 void print(char* str) {
@@ -179,4 +216,26 @@ void printI(int i) {
     char v[11];
     itoa(v, i);
     write(STDOUT_FILENO, v, strlen(v));
+}
+
+
+uint32_t val = 135;
+
+uint32_t rand() {
+    const uint32_t M = 65537;
+    const uint32_t A = 75;
+    const uint32_t Q = M / A;
+    const uint32_t R = M % A;
+
+    uint32_t div = val / Q;
+    uint32_t rem = val % Q;
+
+    uint32_t s = rem * A;
+    uint32_t t = div * R;
+    val = s - t;
+
+    if (val < 0) {
+        val += M;
+    }
+    return val;
 }

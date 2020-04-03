@@ -1,4 +1,4 @@
-#include "P3.h"
+#include "libc.h"
 
 uint32_t weight(uint32_t x) {
     x = (x & 0x55555555) + ((x >>  1) & 0x55555555);
@@ -13,16 +13,13 @@ uint32_t weight(uint32_t x) {
 void main_P3() {
     while (1) {
         print("P3");
-        printI(1292929);
-        /*
-        write(STDOUT_FILENO, "P3", 2);
 
         uint32_t lo = 1 << 8;
         uint32_t hi = 1 << 24;
 
         for (uint32_t x = lo; x < hi; x++) {
           uint32_t r = weight(x); 
-        }*/
+        }
     }
 
     exit(EXIT_SUCCESS);

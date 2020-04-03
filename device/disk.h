@@ -36,8 +36,8 @@ extern int disk_get_block_num();
 extern int disk_get_block_len();
 
 // write an n-byte block of data x to   the disk at block address a
-extern int disk_wr( uint32_t a, const uint8_t* x, int n );
+extern int disk_wr( uint32_t a, const uint8_t* x);
 // read  an n-byte block of data x from the disk at block address a
-extern int disk_rd( uint32_t a,       uint8_t* x, int n );
+extern int disk_rd( uint32_t a,       uint8_t* x);
 
 #endif

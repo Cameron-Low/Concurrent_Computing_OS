@@ -76,13 +76,13 @@ int disk_get_block_len() {
   return DISK_FAILURE;
 }
 
-int disk_wr( uint32_t a, const uint8_t* x, int n ) {
+int disk_wr( uint32_t a, const uint8_t* x) {
   for( int i = 0; i < DISK_RETRY; i++ ) {
       PL011_puth( UART2, 0x01, true );        // write command
       PL011_putc( UART2, ' ',  true );        // write separator
        addr_puth( UART2, a,    true );        // write address
       PL011_putc( UART2, ' ',  true );        // write separator
-       data_puth( UART2, x, n, true );        // write data
+       data_puth( UART2, x, 64, true );        // write data
       PL011_putc( UART2, '\n', true );        // write EOL
   
     if( PL011_geth( UART2, true ) == 0x00 ) { // read  command
@@ -98,7 +98,7 @@ int disk_wr( uint32_t a, const uint8_t* x, int n ) {
   return DISK_FAILURE;
 }
 
-int disk_rd( uint32_t a,       uint8_t* x, int n ) {
+int disk_rd( uint32_t a,       uint8_t* x) {
   for( int i = 0; i < DISK_RETRY; i++ ) {
       PL011_puth( UART2, 0x02, true );        // write command
       PL011_putc( UART2, ' ',  true );        // write separator
@@ -107,7 +107,7 @@ int disk_rd( uint32_t a,       uint8_t* x, int n ) {
   
     if( PL011_geth( UART2, true ) == 0x00 ) { // read  command
       PL011_getc( UART2,       true );        // read  separator
-       data_geth( UART2, x, n, true );        // read  data
+       data_geth( UART2, x, 64, true );        // read  data
       PL011_getc( UART2,       true );        // read  EOL
 
       return DISK_SUCCESS;
