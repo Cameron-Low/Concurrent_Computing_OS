@@ -28,7 +28,17 @@ uint32_t get_stack() {
 // Unmark a stack from the bitmap
 void return_stack(uint32_t num) {
     stacks |= 1 << num;
-} 
+}
+
+// Find an unused file descriptor
+void get_next_fd(pcb_t* p) {
+    for (int i = 0; i < MAX_FILES; i++) {
+        if (p->fdtable[i] == -1) {
+            p->next_fd = i;
+            return;
+        }
+    }
+}
 
 // Store the value of the next pid
 int next_pid = 0;
@@ -60,6 +70,8 @@ pcb_t* create_PCB(const char* name, uint32_t entryPoint, pcb_t* parent) {
     
     // Store the value of the next file_descriptor
     pcb->next_fd = 3;
+    pcb->cwd = malloc(sizeof(char) * MAX_PATH);
+    strcpy(pcb->cwd, "/");
 
     // Set the top of the process's stack
     pcb->stack_num = get_stack();

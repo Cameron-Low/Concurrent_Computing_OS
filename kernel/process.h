@@ -10,6 +10,7 @@
 // Useful Constants
 #define MAX_FILES (10)
 #define MAX_PRIORITY (2)
+#define MAX_PATH (512)
 
 // Top of section for all user process stacks
 extern uint32_t usr_stacks;
@@ -43,6 +44,7 @@ typedef struct pcb_t {
     int timeslice;
     int fdtable[MAX_FILES];
     int next_fd;
+    char* cwd;
 } pcb_t;
 
 // Process list node
@@ -59,6 +61,9 @@ typedef struct {
 
 // User stack handling
 void init_stacks();
+
+// File descriptor management
+void get_next_fd(pcb_t* p);
 
 // PCB operations
 pcb_t* create_PCB(const char* name, uint32_t entryPoint, pcb_t* parent);

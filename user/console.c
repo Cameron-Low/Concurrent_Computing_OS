@@ -65,15 +65,37 @@ void main_console() {
         } else if (strcmp(cmd_argv[0], "list") == 0) {
             list_procs();
         } else if (strcmp(cmd_argv[0], "touch") == 0) {
-            int file = open("test.txt");
+            int file = open(cmd_argv[1]);
             printI(file);
             print("\n");
-            write(file, "hello world!\n", 14);
+            close(file);
         } else if (strcmp(cmd_argv[0], "cat") == 0) {
-            int file = open("test.txt");
+            int file = open(cmd_argv[1]);
             printI(file);
+            print("\n");
             char txt[16];
             read(file, &txt, 15);
+            close(file);
+            print(txt);
+            print("\n");
+        } else if (strcmp(cmd_argv[0], "concat") == 0) {
+            int file = open(cmd_argv[1]);
+            printI(file);
+            print("\n");
+            write(file, cmd_argv[2], strlen(cmd_argv[2]) + 1);
+            close(file);
+        } else if (strcmp(cmd_argv[0], "rm") == 0) {
+            remove(cmd_argv[1]);
+        } else if (strcmp(cmd_argv[0], "mkdir") == 0) {
+            mkdir(cmd_argv[1]);
+        } else if (strcmp(cmd_argv[0], "rmdir") == 0) {
+            rmdir(cmd_argv[1]);
+        } else if (strcmp(cmd_argv[0], "cd") == 0) {
+            chdir(cmd_argv[1]);
+        } else if (strcmp(cmd_argv[0], "pwd") == 0) {
+            char* cwd = getcwd();
+            print(cwd);
+            print("\n");
         } else {
             puts("Unknown command\n", 16);
         }

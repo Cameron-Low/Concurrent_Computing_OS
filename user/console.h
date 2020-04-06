@@ -9,6 +9,6 @@
 
 // Useful constants
 #define MAX_CMD_CHARS ( 1024 )
-#define MAX_CMD_ARGS  ( 2 )
+#define MAX_CMD_ARGS  ( 3 )
 
 #endif

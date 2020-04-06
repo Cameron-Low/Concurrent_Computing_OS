@@ -6,6 +6,7 @@ DISK_BLOCK_LEN   = 64
 
 create-disk :
 	@dd of=${DISK_FILE} if=/dev/zero count=${DISK_BLOCK_NUM} bs=${DISK_BLOCK_LEN}
+	@python format.py
 
 inspect-disk :
 	@hexdump -C ${DISK_FILE}

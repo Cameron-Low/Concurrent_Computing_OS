@@ -189,7 +189,7 @@ void list_procs() {
     }
 }
 
-int open(char* path) {
+int open(const char* path) {
     int fd;
     asm volatile( "mov r0, %2 \n" // assign r0 = path
                   "svc %1     \n" // make system call SYS_OPEN
@@ -208,6 +208,47 @@ void close(int fd) {
               : );
 }
 
+void remove(const char* path) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = path
+                  "svc %0     \n" // make system call SYS_REMOVE
+              :
+              : "I" (SYS_REMOVE), "r" (path)
+              : );
+}
+
+void mkdir(const char* path) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = path
+                  "svc %0     \n" // make system call SYS_MKDIR
+              :
+              : "I" (SYS_MKDIR), "r" (path)
+              : );
+}
+
+void rmdir(const char* path) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = path
+                  "svc %0     \n" // make system call SYS_RMDIR
+              :
+              : "I" (SYS_RMDIR), "r" (path)
+              : );
+}
+
+void chdir(const char* path) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = path
+                  "svc %0     \n" // make system call SYS_CHDIR
+              :
+              : "I" (SYS_CHDIR), "r" (path)
+              : );
+}
+
+char* getcwd() {
+    char* cwd;
+    asm volatile( "svc %1     \n" // make system call SYS_GETCWD
+                  "mov %0, r0 \n"
+              : "=r" (cwd)
+              : "I" (SYS_GETCWD)
+              : );
+    return cwd;
+}
 void print(char* str) {
     write(STDOUT_FILENO, str, strlen(str));
 }

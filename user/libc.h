@@ -21,6 +21,11 @@
 #define SYS_LIST_PROC ( 0x10 )
 #define SYS_OPEN      ( 0x11 )
 #define SYS_CLOSE     ( 0x12 )
+#define SYS_REMOVE    ( 0x13 )
+#define SYS_MKDIR     ( 0x14 )
+#define SYS_RMDIR     ( 0x15 )
+#define SYS_CHDIR     ( 0x16 )
+#define SYS_GETCWD    ( 0x17 )
 
 // Kill process signals
 #define SIG_TERM      ( 0x00 )
@@ -48,9 +53,19 @@ int write(int fd, const void* x, size_t n);
 // Read n bytes into x from the file descriptor fd; return bytes read
 int read(int fd, void* x, size_t n);
 // Open a file at a given path, if it doesn't exist then create a new file.
-int open(char* pathname);
+int open(const char* pathname);
 // Close a file
 void close(int fd);
+// Delete a file
+void remove(const char* pathname);
+// Make a directory
+void mkdir(const char* pathname);
+// Remove an empty directory
+void rmdir(const char* pathname);
+// Change current directory
+void chdir(const char* pathname);
+// Print current directory
+char* getcwd();
 
 // Clone process, returning 0 iff. child or > 0 iff. parent process
 int fork();
