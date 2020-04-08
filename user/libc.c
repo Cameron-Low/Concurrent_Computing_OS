@@ -249,6 +249,15 @@ char* getcwd() {
               : );
     return cwd;
 }
+
+void listdir(const char* path) {
+    asm volatile( "mov r0, %1 \n" // assign r0 = path
+                  "svc %0     \n" // make system call SYS_LISTDIR
+              :
+              : "I" (SYS_LISTDIR), "r" (path)
+              : );
+}
+
 void print(char* str) {
     write(STDOUT_FILENO, str, strlen(str));
 }

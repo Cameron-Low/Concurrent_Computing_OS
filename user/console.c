@@ -95,6 +95,8 @@ void main_console() {
         } else if (strcmp(cmd_argv[0], "cd") == 0) {
             chdir(cmd_argv[1]);
             strcpy(cwd, getcwd());
+        } else if (strcmp(cmd_argv[0], "ls") == 0) {
+            listdir(cmd_argv[1]);
         } else {
             print("Unknown command\n");
         }

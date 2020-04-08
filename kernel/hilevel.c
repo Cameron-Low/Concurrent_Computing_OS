@@ -684,7 +684,6 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             }
             break;
         }
-
         // Handle the rmdir system call
         case 0x15: {
             // Calculate the absolute path to the new directory
@@ -751,6 +750,51 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         // Handle the getcwd system call
         case 0x17: {
             ctx->gpr[0] = (uint32_t) running->cwd;
+            break;
+        }
+        // Handle the listdir system call
+        case 0x18: {
+            // Calculate the absolute path to the new directory
+            char* rel_path = (char*) ctx->gpr[0];
+            char* abs_path = malloc(sizeof(char) * MAX_PATH);
+            strcpy(abs_path, running->cwd);
+            calculate_path(abs_path, rel_path);
+
+            // Start our search from '/' (root directory)
+            inode_t inode;
+            int inode_num = 0;
+
+            char* file = "/";
+            char* next_file = strtok(abs_path, "/");
+            while (file != NULL) {
+                read_inode_block(inode_num, &inode);
+
+                if (inode.type == DIRECTORY) {
+                    dir_entry_t entry = {0};
+                    // Look for name in entries
+                    for (int i = 0; i < 12; i++) {
+                        // Ignore empty entries
+                        if (inode.directptrs[i] == -1) {
+                            continue;
+                        }
+                        // Check to see if the current entry matches the next part of the path 
+                        read_dir_entry(inode.directptrs[i], &entry);
+                        if (next_file == NULL) {
+                            print_UART(UART1, entry.name, strlen(entry.name));
+                            print_UART(UART1, "\n", 1);
+                        } else if (strcmp(next_file, entry.name) == 0) {
+                            inode_num = entry.inode_num;
+                            break;
+                        }
+                    }
+                    // Move on to the next part of the file path
+                    file = next_file;
+                    next_file = strtok(NULL, "/");
+                } else {
+                   break; 
+                }
+            }
+            free(abs_path);
             break;
         }
     }

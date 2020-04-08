@@ -26,6 +26,7 @@
 #define SYS_RMDIR     ( 0x15 )
 #define SYS_CHDIR     ( 0x16 )
 #define SYS_GETCWD    ( 0x17 )
+#define SYS_LISTDIR   ( 0x18 )
 
 // Kill process signals
 #define SIG_TERM      ( 0x00 )
@@ -66,6 +67,8 @@ void rmdir(const char* pathname);
 void chdir(const char* pathname);
 // Print current directory
 char* getcwd();
+// List the conctents of the dir
+void listdir(const char* pathname);
 
 // Clone process, returning 0 iff. child or > 0 iff. parent process
 int fork();
