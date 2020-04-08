@@ -35,10 +35,13 @@ void* load(char* x) {
     }
 }
 
+char cwd[1024];
 void main_console() {
+    strcpy(cwd, "/");
     while (1) {
         // Get command input
-        puts(">> ", 3); 
+        print(cwd);
+        print(" >> "); 
         char cmd[MAX_CMD_CHARS];
         gets(cmd, MAX_CMD_CHARS);
 
@@ -58,7 +61,7 @@ void main_console() {
                     exec(addr);
                 }
             } else {
-                puts("Unknown program\n", 16);
+                print("Unknown program\n");
             }
         } else if (strcmp(cmd_argv[0], "kill") == 0) {
             kill(atoi(cmd_argv[1]), SIG_TERM);
@@ -71,7 +74,6 @@ void main_console() {
             close(file);
         } else if (strcmp(cmd_argv[0], "cat") == 0) {
             int file = open(cmd_argv[1]);
-            printI(file);
             print("\n");
             char txt[16];
             read(file, &txt, 15);
@@ -92,12 +94,9 @@ void main_console() {
             rmdir(cmd_argv[1]);
         } else if (strcmp(cmd_argv[0], "cd") == 0) {
             chdir(cmd_argv[1]);
-        } else if (strcmp(cmd_argv[0], "pwd") == 0) {
-            char* cwd = getcwd();
-            print(cwd);
-            print("\n");
+            strcpy(cwd, getcwd());
         } else {
-            puts("Unknown command\n", 16);
+            print("Unknown command\n");
         }
     }
     exit(EXIT_SUCCESS);

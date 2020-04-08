@@ -27,6 +27,7 @@ void print_UART(PL011_t* UART, char* str, int len) {
     for (int i = 0; i < len; i++) {
         PL011_putc(UART, *str++, true);
     }
+    //PL011_putc(UART, '\n', true);
 }
 
 // Add pcb to correct priority ready queue
@@ -95,14 +96,6 @@ void hilevel_handler_rst(ctx_t* ctx) {
     GICD0->ISENABLER1 = 0x10;
     GICD0->CTLR = 0x1;
 
-/*    // Format the disk
-    inode_t root;
-    read_inode_block(claim_inode_block(), &root);
-    for (int i = 0; i < 12; i++) {
-        root.directptrs[i] = -1;
-    }
-    write_inode_block(0, &root);
-*/
     // Initialise the standard file descriptors: STDIN/STDOUT/STDERR/CONOUT
     file_table[0] = (fcb_t) {0, -1, READ};
     file_table[1] = (fcb_t) {1, -1, WRITE}; 
@@ -113,11 +106,11 @@ void hilevel_handler_rst(ctx_t* ctx) {
     }
     
     // Initialise the ready queue
-    for (int i = 0; i < MAX_PRIORITY + 1; i++) {
-        if (multiq[i] != NULL) {
-            free_list(multiq[i]);
+    for (int j = 0; j < MAX_PRIORITY + 1; j++) {
+        if (multiq[j] != NULL) {
+            free_list(multiq[j]);
         }
-        multiq[i] = create_list();
+        multiq[j] = create_list();
     }
 
     // Initialise process table
@@ -403,17 +396,18 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         }
         // Handle the open system call
         case 0x11: {
-            char* path = (char*) ctx->gpr[0];
-            
-            // Traverse the directories in the file path starting with the root node (inode 0)
+            // Calculate the absolute path to the new directory
+            char* rel_path = (char*) ctx->gpr[0];
+            char* abs_path = malloc(sizeof(char) * MAX_PATH);
+            strcpy(abs_path, running->cwd);
+            calculate_path(abs_path, rel_path);
+
+            // Start our search from '/' (root directory)
             inode_t inode;
             int inode_num = 0;
 
-            char* file = malloc(sizeof(char) * MAX_PATH);
-            char* rem = file;
-            strcat(file, running->cwd);
-            strcat(file, path);
-            char* next_file = strtok(path, "/");
+            char* file = "/";
+            char* next_file = strtok(abs_path, "/");
             char* next_next_file = strtok(NULL, "/");
             while (file != NULL) {
                 read_inode_block(inode_num, &inode);
@@ -421,8 +415,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                 if (inode.type == DIRECTORY) {
                     if (next_file == NULL) {
                         // Error: File path is invalid, trying to open a directory 
-                        free(rem);
-                        return;
+                        break;
                     }
 
                     // Look through each entry in the current directory to see if we can find the file
@@ -448,8 +441,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                     if (!found) {
                         if (next_next_file != NULL) {
                             // Error: File path is invalid, directory not found
-                            free(rem);
-                            return;
+                            break;
                         }
                         // Create a new directory entry
                         entry.inode_num = claim_inode_block();
@@ -476,8 +468,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                         ctx->gpr[0] = running->next_fd;
                         get_next_fd(running);
                         get_next_global_fd();
-                        free(rem);
-                        return;
+                        break;
                     } else {
                         // Move on to the next part of the file path
                         file = next_file;
@@ -487,8 +478,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                 } else if (inode.type == DATA) {
                     if (next_file != NULL) {
                         // Error: data treated as directory
-                        free(rem);
-                        return;
+                        break;
                     }
 
                     // Check if file already open
@@ -497,7 +487,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                         // Check if the file is in the process file table already
                         if (file_table[running->fdtable[i]].inode_num == inode_num) {
                             ctx->gpr[0] = i;
-                            free(rem);
+                            free(abs_path);
                             return;
                         }
                         // Check if the file is in the global file table already
@@ -505,7 +495,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                             running->fdtable[running->next_fd] = file_table[i].fd;
                             ctx->gpr[0] = running->next_fd;
                             get_next_fd(running);
-                            free(rem);
+                            free(abs_path);
                             return;
                         }
                     }
@@ -516,48 +506,46 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                     ctx->gpr[0] = running->next_fd;
                     get_next_fd(running);
                     get_next_global_fd();
-                    free(rem);
-                    return;
+                    break;
                 } else {
                     // Error: Invalid inode
-                    free(rem);
-                    return;
+                    break;
                 }
             }
+            free(abs_path);
             break;
         }
         // Handle the close system call
         case 0x12: {
             // Get the file descriptor for the process 
             int usr_fd = (int) ctx->gpr[0];
-
-            running->fdtable[usr_fd] = 0;
+            running->fdtable[usr_fd] = -1;
             break;
         }
         // Handle the remove system call
         case 0x13: {
-            char* path = (char*) ctx->gpr[0];
+            // Calculate the absolute path to the new directory
+            char* rel_path = (char*) ctx->gpr[0];
+            char* abs_path = malloc(sizeof(char) * MAX_PATH);
+            strcpy(abs_path, running->cwd);
+            calculate_path(abs_path, rel_path);
 
+            // Start our search from '/' (root directory)
             inode_t inode;
             inode_t prev_inode;
             int inode_num = 0;
             int prev_inode_num = 0;
             int dir_entry_num = 0;
 
-            // Traverse the directories in the file path
-            char* file = malloc(sizeof(char) * MAX_PATH);
-            char* rem = file;
-            strcat(file, running->cwd);
-            strcat(file, path);
-            char* next_file = strtok(path, "/");
+            char* file = "/";
+            char* next_file = strtok(abs_path, "/");
             while (file != NULL) {
                 read_inode_block(inode_num, &inode);
 
                 if (inode.type == DIRECTORY) {
                     if (next_file == NULL) {
                         // Error: 
-                        free(rem);
-                        return;
+                        break;
                     }
 
                     dir_entry_t entry = {0};
@@ -569,7 +557,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                         }
                         // Check to see if the current entry matches the next part of the path 
                         read_dir_entry(inode.directptrs[i], &entry);
-                        if (strcmp(next_file, entry.name) == 0) {
+                        if (strcmp(next_file, entry.name) == 0) { 
                             dir_entry_num = i;
                             prev_inode_num = inode_num;
                             inode_num = entry.inode_num;
@@ -583,8 +571,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                 } else if (inode.type == DATA) {
                     if (next_file != NULL) {
                         // Error: data treated as directory
-                        free(rem);
-                        return;
+                        break;
                     }
                     // Free all the associated data blocks for this 
                     for (int i = 0; i < 12; i++) {
@@ -608,38 +595,39 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                             running->fdtable[i] = -1;
                             file_table[running->fdtable[i]].fd = -1;
                             file_table[running->fdtable[i]].inode_num = -1;
-                            free(rem);
-                            return;
+                            break;
                         }
                         // Check if the file is in the global file table 
                         if (file_table[i].inode_num == inode_num) {
                             file_table[i].fd = -1;
                             file_table[i].inode_num = -1;
-                            free(rem);
-                            return;
+                            break;
                         }
                     }
+                    break;
                 } else {
                     // Error: bad file path
-                    free(rem);
+                    break;
                 }
             }
+            free(abs_path);
             break;
         }
         // Handle the mkdir system call
         case 0x14: {
-            char* path = (char*) ctx->gpr[0];
+            // Calculate the absolute path to the new directory
+            char* rel_path = (char*) ctx->gpr[0];
+            char* abs_path = malloc(sizeof(char) * MAX_PATH);
+            strcpy(abs_path, running->cwd);
+            calculate_path(abs_path, rel_path);
 
+            // Start our search from '/' (root directory)
             inode_t inode;
             int inode_num = 0;
             int prev_dir_ptr = 0;
 
-            // Traverse the directories in the file path
-            char* file = malloc(sizeof(char) * MAX_PATH);
-            char* rem = file;
-            strcat(file, running->cwd);
-            strcat(file, path);
-            char* next_file = strtok(path, "/");
+            char* file = "/";
+            char* next_file = strtok(abs_path, "/");
             char* next_next_file = strtok(NULL, "/");
             while (file != NULL) {
                 read_inode_block(inode_num, &inode);
@@ -652,7 +640,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                         if (inode.directptrs[i] == -1) {
                             if (next_next_file == NULL) {
                                 // Create a new directory entry
-                                dir_entry_t dir;
+                                dir_entry_t dir = {0};
                                 dir.inode_num = claim_inode_block();
                                 dir.type = DIRECTORY;
                                 strcpy(dir.name, next_file);
@@ -671,28 +659,26 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                                 }
                                 new_inode.type = DIRECTORY;
                                 write_inode_block(dir.inode_num, &new_inode);
-                                free(rem);
+                                free(abs_path);
                                 return;
-                            } else {
-                                continue;
                             }
                         }
                         // Check to see if the current entry matches the next part of the path 
                         read_dir_entry(inode.directptrs[i], &entry);
                         if (strcmp(next_file, entry.name) == 0) {
-                            inode_num = entry.inode_num;
-                            prev_dir_ptr = inode.directptrs[i];
-                            break;
+                                inode_num = entry.inode_num;
+                                prev_dir_ptr = inode.directptrs[i];
+                                break;
                         }
                     }
                     // Move on to the next part of the file path
                     file = next_file;
                     next_file = next_next_file;
                     next_next_file = strtok(NULL, "/");
-                } else if (inode.type == DATA) {
+                } else {
                     // Error:
                     // Cannot traverse through a file or create a directory in a file
-                    free(rem);
+                    free(abs_path);
                     return;    
                 }
             }
@@ -701,17 +687,18 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         // Handle the rmdir system call
         case 0x15: {
-            char* path = (char*) ctx->gpr[0];
-            
+            // Calculate the absolute path to the new directory
+            char* rel_path = (char*) ctx->gpr[0];
+            char* abs_path = malloc(sizeof(char) * MAX_PATH);
+            strcpy(abs_path, running->cwd);
+            calculate_path(abs_path, rel_path);
+
+            // Start our search from '/' (root directory)
             inode_t inode;
             int inode_num = 0;
 
-            // Traverse the directories in the file path
-            char* file = malloc(sizeof(char) * MAX_PATH);
-            char* rem = file;
-            strcat(file, running->cwd);
-            strcat(file, path);
-            char* next_file = strtok(path, "/");
+            char* file = "/";
+            char* next_file = strtok(abs_path, "/");
             char* next_next_file = strtok(NULL, "/");
             while (file != NULL) {
                 read_inode_block(inode_num, &inode);
@@ -733,7 +720,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                                 free_data_block(inode.directptrs[i]);
                                 inode.directptrs[i] = -1;
                                 write_inode_block(inode_num, &inode);
-                                free(rem);
+                                free(abs_path);
                                 return;
                             }
                             inode_num = entry.inode_num;
@@ -747,18 +734,18 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                 } else if (inode.type == DATA) {
                     if (next_file != NULL) {
                         // Error: data treated as directory
-                        free(rem);
-                        return;
+                        break;
                     }
                 }
             }
+            free(abs_path);
             break;
         }
         // Handle the chdir system call
         case 0x16: {
             char* path = (char*) ctx->gpr[0];
-            // Simply cat the path onto our cwd 
-            strcat(running->cwd, path);
+            // Update the cwd
+            calculate_path(running->cwd, path);
             break;
         }
         // Handle the getcwd system call
@@ -769,3 +756,29 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
     }
 }
 
+void calculate_path(char* initial_path, char* added_path) {
+    // Tokenize the additional path
+    char* file = strtok(added_path, "/");
+    while (file != NULL) {
+        // Check for 'goto parent'
+        if (strcmp("..", file) == 0) {
+            // Find the partition to parent directory
+            char* ptr = strrchr(initial_path, '/');
+            // Remove the current directory from the path
+            // Keep the very first '/' to indicate the root directory
+            if (strchr(initial_path, '/') != ptr) {
+                *ptr = '\0';
+            } else {
+                ptr[1] = '\0';
+            }
+        } else {
+            // Add a separator between the parent directory and its child, unless the parent is the root directory
+            if (strcmp(initial_path, "/") != 0) {
+                strcat(initial_path, "/");
+            }
+            strcat(initial_path, file);
+        }
+        // Move onto the next directory
+        file = strtok(NULL, "/");
+    }
+}

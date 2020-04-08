@@ -25,4 +25,7 @@ extern void* main_console;
 // Useful process variables
 extern int next_pid;
 extern int num_procs;
+
+// Usefule functions
+void calculate_path(char* initial_path, char* added_path);
 #endif
