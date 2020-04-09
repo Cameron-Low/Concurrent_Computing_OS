@@ -47,7 +47,7 @@ void main_console() {
 
         // Tokenize the input
         int cmd_argc = 0;
-        char* cmd_argv[MAX_CMD_ARGS];
+        char* cmd_argv[MAX_CMD_ARGS] = {'\0'};
 
         for (char* t = strtok(cmd, " "); t != NULL; t = strtok(NULL," ")) {
             cmd_argv[cmd_argc++] = t;
@@ -69,12 +69,9 @@ void main_console() {
             list_procs();
         } else if (strcmp(cmd_argv[0], "touch") == 0) {
             int file = open(cmd_argv[1]);
-            printI(file);
-            print("\n");
             close(file);
         } else if (strcmp(cmd_argv[0], "cat") == 0) {
             int file = open(cmd_argv[1]);
-            print("\n");
             char txt[16];
             read(file, &txt, 15);
             close(file);
@@ -82,8 +79,6 @@ void main_console() {
             print("\n");
         } else if (strcmp(cmd_argv[0], "concat") == 0) {
             int file = open(cmd_argv[1]);
-            printI(file);
-            print("\n");
             write(file, cmd_argv[2], strlen(cmd_argv[2]) + 1);
             close(file);
         } else if (strcmp(cmd_argv[0], "rm") == 0) {

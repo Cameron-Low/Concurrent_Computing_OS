@@ -26,6 +26,24 @@ extern void* main_console;
 extern int next_pid;
 extern int num_procs;
 
-// Usefule functions
-void calculate_path(char* initial_path, char* added_path);
+// System call identifiers
+#define SYS_YIELD     ( 0x00 )
+#define SYS_WRITE     ( 0x01 )
+#define SYS_READ      ( 0x02 )
+#define SYS_FORK      ( 0x03 )
+#define SYS_EXIT      ( 0x04 )
+#define SYS_EXEC      ( 0x05 )
+#define SYS_KILL      ( 0x06 )
+#define SYS_NICE      ( 0x07 )
+#define SYS_SEM_INIT  ( 0x08 )
+#define SYS_SEM_CLOSE ( 0x09 )
+#define SYS_LIST_PROC ( 0x10 )
+#define SYS_OPEN      ( 0x11 )
+#define SYS_CLOSE     ( 0x12 )
+#define SYS_REMOVE    ( 0x13 )
+#define SYS_MKDIR     ( 0x14 )
+#define SYS_RMDIR     ( 0x15 )
+#define SYS_CHDIR     ( 0x16 )
+#define SYS_GETCWD    ( 0x17 )
+#define SYS_LISTDIR   ( 0x18 )
 #endif
