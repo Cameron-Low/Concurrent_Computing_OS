@@ -730,6 +730,31 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             break;
         }
 
+        case SYS_LOAD: {
+            // Get the file descriptor, string pointer and length of string.
+            uint32_t usr_fd = ctx->gpr[0];
+
+            void* ptr = malloc(sizeof(uint32_t) * 100);
+            void* temp = ptr;
+
+            // Calculate the correct file descriptor from the process file table
+            int fd = running->fdtable[usr_fd];
+
+            // Get the corresponding inode from the file descriptor
+            uint8_t block[BLOCK_LENGTH];
+            inode_t inode;
+            int inode_num = file_table[fd].inode_num;
+            read_inode_block(inode_num, &inode);
+            for (int i = 0; i < 12; i++) {
+                read_data_block(inode.directptrs[i], block);
+                memcpy(temp, block, BLOCK_LENGTH);
+                temp += BLOCK_LENGTH;
+            }
+            
+            ctx->gpr[0] = (uint32_t) ptr;
+            break;                   
+        }
+
 
         /**********************************
          * IPCs

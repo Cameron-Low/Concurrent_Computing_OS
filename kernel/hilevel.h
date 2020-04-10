@@ -46,4 +46,5 @@ extern int num_procs;
 #define SYS_CHDIR     ( 0x16 )
 #define SYS_GETCWD    ( 0x17 )
 #define SYS_LISTDIR   ( 0x18 )
+#define SYS_LOAD      ( 0x19 )
 #endif

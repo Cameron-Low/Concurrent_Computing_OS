@@ -258,6 +258,17 @@ void listdir(const char* path) {
               : );
 }
 
+void* load(int fd) {
+    void* ptr;
+    asm volatile( "mov r0, %2 \n" // assign r0 = fd
+                  "svc %1     \n" // make system call SYS_LOAD
+                  "mov %0, r0 \n"
+              : "=r" (ptr)
+              : "I" (SYS_LOAD), "r" (fd)
+              : );
+    return ptr;
+}
+
 void print(char* str) {
     write(STDOUT_FILENO, str, strlen(str));
 }

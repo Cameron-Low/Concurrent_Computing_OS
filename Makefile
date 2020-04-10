@@ -21,7 +21,7 @@ LINARO_PREFIX = arm-eabi
 	@${LINARO_PATH}/bin/${LINARO_PREFIX}-gcc $(addprefix -I , ${PROJECT_PATH} ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/include) -mcpu=cortex-a8 -mabi=aapcs -ffreestanding -std=gnu99 -g -c -fomit-frame-pointer -O -o ${@} ${<}
 
 %.elf: ${PROJECT_OBJECTS}
-	@${LINARO_PATH}/bin/${LINARO_PREFIX}-ld  $(addprefix -L ,                 ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/lib    ) -T ${*}.ld -o ${@} ${^} -lc -lgcc
+	@${LINARO_PATH}/bin/${LINARO_PREFIX}-ld  $(addprefix -L , ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/lib) -T ${*}.ld -o ${@} ${^} -lc -lgcc
 %.bin: %.elf
 	@${LINARO_PATH}/bin/${LINARO_PREFIX}-objcopy -O binary ${<} ${@}
 
@@ -48,3 +48,8 @@ clean:
 
 include Makefile.console
 include Makefile.disk
+
+compile:
+	@${LINARO_PATH}/bin/${LINARO_PREFIX}-gcc -I ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/include -mcpu=cortex-a8 -mabi=aapcs -ffreestanding -std=gnu99 -g -c -fomit-frame-pointer -O -o P1 user/P1.c
+	@${LINARO_PATH}/bin/${LINARO_PREFIX}-objcopy -O binary P1	P1
+
