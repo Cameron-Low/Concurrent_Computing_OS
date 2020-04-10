@@ -21,7 +21,7 @@ extern void main_P4();
 extern void main_P5(); 
 extern void main_dining();
 
-void* load(char* x) {
+void* loader(char* x) {
     if (0 == strcmp(x, "P3")) {
         return &main_P3;
     } else if(0 == strcmp(x, "P4")) {
@@ -30,6 +30,11 @@ void* load(char* x) {
         return &main_P5;
     } else if(0 == strcmp(x, "Dining")) {
         return &main_dining;
+    } else if(0 == strcmp(x, "P1")) {
+        int file = open("P1");
+        void* ptr = load(file);
+        close(file);
+        return NULL;
     } else {
         return NULL;
     }
@@ -55,7 +60,7 @@ void main_console() {
 
         // Handle the command
         if (strcmp(cmd_argv[0], "exec") == 0) {
-            void* addr = load(cmd_argv[1]);
+            void* addr = loader(cmd_argv[1]);
             if (addr != NULL) {
                 if (fork() == 0) {
                     exec(addr);

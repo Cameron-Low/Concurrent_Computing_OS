@@ -27,6 +27,7 @@
 #define SYS_CHDIR     ( 0x16 )
 #define SYS_GETCWD    ( 0x17 )
 #define SYS_LISTDIR   ( 0x18 )
+#define SYS_LOAD      ( 0x19 )
 
 // Kill process signals
 #define SIG_TERM      ( 0x00 )
@@ -69,6 +70,8 @@ void chdir(const char* pathname);
 char* getcwd();
 // List the conctents of the dir
 void listdir(const char* pathname);
+// Load program into memory
+void* load(int fd);
 
 // Clone process, returning 0 iff. child or > 0 iff. parent process
 int fork();
