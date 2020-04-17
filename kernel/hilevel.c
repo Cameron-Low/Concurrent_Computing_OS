@@ -193,7 +193,11 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
         }
     }
     // If we get here: either file didn't exist or there wasn't a file at the end of the path
-    strcpy(file_name, next_file);
+    if (next_file == NULL) {
+        strcpy(file_name, "");
+    } else {
+        strcpy(file_name, next_file);
+    }
     memcpy(dir_inode, &inode, sizeof(inode_t));
     free(abs_path);
     return inode_num;
