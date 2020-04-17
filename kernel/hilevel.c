@@ -138,6 +138,8 @@ void calculate_path(char* initial_path, char* added_path) {
         // Move onto the next directory
         file = strtok(NULL, "/");
     }
+    print_UART(UART0, initial_path, strlen(initial_path));
+    print_UART(UART0, added_path, strlen(added_path));
 }
 
 // Return the inode for the last directory in the file path
@@ -188,7 +190,7 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
         } else {
             // Error: trying to traverse through a non-directory
             inode_num = -1;
-            print_UART(UART1, "Bad file path\n", 15);
+            print_UART(UART1, "bad file path\n", 15);
             break;
         }
     }
