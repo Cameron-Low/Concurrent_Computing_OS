@@ -5,12 +5,11 @@ PROJECT_OBJECTS = $(addsuffix .o, $(basename ${PROJECT_SOURCES}))
 PROJECT_TARGETS = image.elf image.bin
 
 QEMU_PATH = /usr
-QEMU_GDB =        127.0.0.1:1234
+QEMU_GDB = 127.0.0.1:1234
 QEMU_UART = stdio
 QEMU_UART += telnet:127.0.0.1:1235,server
 QEMU_UART += telnet:127.0.0.1:1236,server
 QEMU_DISPLAY = -nographic -display none 
-#QEMU_DISPLAY = -display sdl
 
 LINARO_PATH = /usr/local/gcc-linaro-x86_64_arm-eabi
 LINARO_PREFIX = arm-eabi
@@ -44,12 +43,6 @@ kill:
 clean:
 	@rm -f core ${PROJECT_OBJECTS} ${PROJECT_TARGETS}
 
-# -gdb tcp:${QEMU_GDB}
-
 include Makefile.console
 include Makefile.disk
-
-compile:
-	@${LINARO_PATH}/bin/${LINARO_PREFIX}-gcc -I ${LINARO_PATH}/${LINARO_PREFIX}/libc/usr/include -mcpu=cortex-a8 -mabi=aapcs -ffreestanding -std=gnu99 -g -c -fomit-frame-pointer -O -o P1 user/P1.c
-	@${LINARO_PATH}/bin/${LINARO_PREFIX}-objcopy -O binary P1	P1
 
