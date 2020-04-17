@@ -151,7 +151,7 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
     inode_t inode;
     int inode_num = 0;
     read_inode_block(inode_num, &inode);
-    char* file = "/";
+    char* file = "";
     char* next_file = strtok(abs_path, "/");
     char* next_next_file = strtok(NULL, "/");
     while (next_file != NULL) {
@@ -177,13 +177,10 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
                     }
                 }
             }
-            /*
-            if (!found) {
-                // Error: trying to traverse through a non existent directory
-                inode_num = -1;
-                print_UART(UART1, "Bad file path\n", 15);
+            // If we haven't found the thing we are looking for, exit the loop
+            if (!found && next_next_file == NULL) {
                 break;
-            }*/
+            }
             file = next_file;
             next_file = next_next_file;
             next_next_file = strtok(NULL, "/");
@@ -196,7 +193,7 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
         }
     }
     // If we get here: either file didn't exist or there wasn't a file at the end of the path
-    strcpy(file_name, file);
+    strcpy(file_name, next_file);
     memcpy(dir_inode, &inode, sizeof(inode_t));
     free(abs_path);
     return inode_num;
@@ -518,6 +515,9 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             inode_t dir_inode = {0};
             int dir_inode_num = traverse_filesystem(rel_path, file_name, &dir_inode);
             if (dir_inode_num == -1) break; 
+            if (strcmp(file_name, "") == 0) {
+                print_UART(UART1, "Cannot access a directory\n", 26);
+            }
 
             // Look through each entry in the directory to see if we can find the file
             dir_entry_t entry = {0};
@@ -599,6 +599,9 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             inode_t dir_inode;
             int dir_inode_num = traverse_filesystem(rel_path, file_name, &dir_inode);
             if (dir_inode_num == -1) break;
+            if (strcmp(file_name, "") == 0) {
+                print_UART(UART1, "Trying to remove a directory\n", 29);
+            }
 
             // Look for file in the directory
             dir_entry_t entry = {0};
@@ -659,7 +662,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             char dir_name[60];
             inode_t parent_inode = {0};
             int parent_inode_num = traverse_filesystem(rel_path, dir_name, &parent_inode);
-            if (parent_inode_num == -1) break; 
+            if (parent_inode_num == -1) break;
+            if (strcmp(dir_name, "") == 0) {
+                print_UART(UART1, "Bad file path\n", 15);
+            }
 
             dir_entry_t entry = {0};
             int created = 0;
@@ -702,6 +708,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             inode_t dir_inode = {0};
             int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
             if (dir_inode_num == -1) break; 
+            if (strcmp(dir_name, "") != 0) {
+                print_UART(UART1, "Bad file path\n", 15);
+                break;
+            }    
 
             // Free the directory entry
             dir_entry_t parent_dir;
@@ -727,7 +737,7 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_CHDIR: {
             char* rel_path = (char*) ctx->gpr[0];
-            char file_name[60];
+            char dir_name[60];
             inode_t dir_inode = {0};
             int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
             if (dir_inode_num == -1) break; 
@@ -746,10 +756,14 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_LISTDIR: {
             char* rel_path = (char*) ctx->gpr[0];
-            char file_name[60];
+            char dir_name[60];
             inode_t dir_inode = {0};
-            int dir_inode_num = traverse_filesystem(rel_path, file_name, &dir_inode);
+            int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
             if (dir_inode_num == -1) break; 
+            if (strcmp(dir_name, "") != 0) {
+                print_UART(UART1, "Bad file path\n", 15);
+                break;
+            }    
             dir_entry_t entry = {0};
             // Print all non-empty directory entries
             for (int i = 0; i < 12; i++) {
