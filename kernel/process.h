@@ -8,7 +8,7 @@
 #include <string.h>
 
 // Useful Constants
-#define MAX_FILES (10)
+#define MAX_FILES (32)
 #define MAX_PRIORITY (2)
 #define MAX_PATH (512)
 

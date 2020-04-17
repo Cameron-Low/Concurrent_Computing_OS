@@ -26,9 +26,11 @@ fcb_t file_table[MAX_FILES];
 // -- Initially 4 because there are 4 standard file descriptors for this OS.
 int next_fd = 4;
 
-/******************
- * KERNEL IO -->> Move to another file
- */
+
+/**********************************
+ * KERNEL I/O
+**********************************/
+
 // Push string to a given UART
 void print_UART(PL011_t* UART, char* str, int len) {
     for (int i = 0; i < len; i++) {
@@ -143,9 +145,7 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
     // Calculate the absolute path
     char* abs_path = malloc(sizeof(char) * MAX_PATH);
     strcpy(abs_path, running->cwd);
-    print_UART(UART0, abs_path, strlen(abs_path));
     calculate_path(abs_path, rel_path);
-    print_UART(UART0, abs_path, strlen(abs_path));
 
     // Start our search from '/' (root directory)
     inode_t inode;
@@ -157,6 +157,7 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
     while (next_file != NULL) {
         // Look through each entry in the current directory to see if we can find the file
         if (inode.type == DIRECTORY) {
+            int found = 0;
             dir_entry_t entry = {0};
             for (int i = 0; i < 12; i++) {
                 // Check to see if the current entry matches the next part of the path 
@@ -171,10 +172,18 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
                             return inode_num;
                         }
                         inode_num = entry.inode_num;
+                        found = 1;
                         break;
                     }
                 }
             }
+            /*
+            if (!found) {
+                // Error: trying to traverse through a non existent directory
+                inode_num = -1;
+                print_UART(UART1, "Bad file path\n", 15);
+                break;
+            }*/
             file = next_file;
             next_file = next_next_file;
             next_next_file = strtok(NULL, "/");
@@ -182,6 +191,7 @@ int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {
         } else {
             // Error: trying to traverse through a non-directory
             inode_num = -1;
+            print_UART(UART1, "Bad file path\n", 15);
             break;
         }
     }
@@ -504,9 +514,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         case SYS_OPEN: {
             // Calculate the absolute path to the new directory
             char* rel_path = (char*) ctx->gpr[0];
-            char* file_name = '\0';
+            char file_name[60];
             inode_t dir_inode = {0};
             int dir_inode_num = traverse_filesystem(rel_path, file_name, &dir_inode);
+            if (dir_inode_num == -1) break; 
 
             // Look through each entry in the directory to see if we can find the file
             dir_entry_t entry = {0};
@@ -527,6 +538,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
             // If we didn't find the file then create it 
             if (inode_num == -1) {
+                if (free_entry_num == -1) {
+                    print_UART(UART1, "Directory full\n", 15);
+                    break;
+                }
                 // Create a new directory entry
                 entry.inode_num = claim_inode_block();
                 inode_num = entry.inode_num;
@@ -580,9 +595,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_REMOVE: {
             char* rel_path = (char*) ctx->gpr[0];
-            char* file_name = '\0';
+            char file_name[60];
             inode_t dir_inode;
             int dir_inode_num = traverse_filesystem(rel_path, file_name, &dir_inode);
+            if (dir_inode_num == -1) break;
 
             // Look for file in the directory
             dir_entry_t entry = {0};
@@ -595,6 +611,11 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                         break;
                     }
                 }
+            }
+
+            if (dir_entry_num == -1) {
+                print_UART(UART1, "File not found\n", 15);
+                break;
             }
 
             // Deallocate all the space used by the file in memory
@@ -635,11 +656,13 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_MKDIR: {
             char* rel_path = (char*) ctx->gpr[0];
-            char* dir_name = '\0';
+            char dir_name[60];
             inode_t parent_inode = {0};
             int parent_inode_num = traverse_filesystem(rel_path, dir_name, &parent_inode);
+            if (parent_inode_num == -1) break; 
 
             dir_entry_t entry = {0};
+            int created = 0;
             for (int i = 0; i < 12; i++) {
                 // If we find a space for the new directory, create a new directory
                 if (parent_inode.directptrs[i] == -1) {
@@ -663,17 +686,22 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
                     }
                     new_inode.type = DIRECTORY;
                     write_inode_block(dir.inode_num, &new_inode);
+                    created = 1;
                     break;
                 }
+            }
+            if (!created) {
+                print_UART(UART1, "Directory full\n", 15);
             }
             break;
         }
 
         case SYS_RMDIR: {
             char* rel_path = (char*) ctx->gpr[0];
-            char* dir_name = '\0';
+            char dir_name[60];
             inode_t dir_inode = {0};
             int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
+            if (dir_inode_num == -1) break; 
 
             // Free the directory entry
             dir_entry_t parent_dir;
@@ -698,8 +726,16 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
         }
 
         case SYS_CHDIR: {
-            char* path = (char*) ctx->gpr[0];
-            calculate_path(running->cwd, path);
+            char* rel_path = (char*) ctx->gpr[0];
+            char file_name[60];
+            inode_t dir_inode = {0};
+            int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
+            if (dir_inode_num == -1) break; 
+            if (strcmp(dir_name, "") != 0) {
+                print_UART(UART1, "Bad file path\n", 15);
+                break;
+            }    
+            calculate_path(running->cwd, rel_path);
             break;
         }
 
@@ -710,8 +746,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_LISTDIR: {
             char* rel_path = (char*) ctx->gpr[0];
+            char file_name[60];
             inode_t dir_inode = {0};
-            int dir_inode_num = traverse_filesystem(rel_path, NULL, &dir_inode);
+            int dir_inode_num = traverse_filesystem(rel_path, file_name, &dir_inode);
+            if (dir_inode_num == -1) break; 
             dir_entry_t entry = {0};
             // Print all non-empty directory entries
             for (int i = 0; i < 12; i++) {
@@ -730,36 +768,10 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             break;
         }
 
-        case SYS_LOAD: {
-            // Get the file descriptor, string pointer and length of string.
-            uint32_t usr_fd = ctx->gpr[0];
-
-            void* ptr = malloc(sizeof(uint32_t) * 100);
-            void* temp = ptr;
-
-            // Calculate the correct file descriptor from the process file table
-            int fd = running->fdtable[usr_fd];
-
-            // Get the corresponding inode from the file descriptor
-            uint8_t block[BLOCK_LENGTH];
-            inode_t inode;
-            int inode_num = file_table[fd].inode_num;
-            read_inode_block(inode_num, &inode);
-            for (int i = 0; i < 12; i++) {
-                read_data_block(inode.directptrs[i], block);
-                memcpy(temp, block, BLOCK_LENGTH);
-                temp += BLOCK_LENGTH;
-            }
-            
-            ctx->gpr[0] = (uint32_t) ptr;
-            break;                   
-        }
-
 
         /**********************************
          * IPCs
         **********************************/
-
 
         // Handle the sem_init system call
         case SYS_SEM_INIT: {

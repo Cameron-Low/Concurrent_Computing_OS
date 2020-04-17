@@ -39,7 +39,7 @@ SECTIONS {
 
     /* Allocate stack for usr mode */
     /* We will split this into 4 KiB sections, 1 section will be given to each new process */
-    max_procs = 21;
+    max_procs = 32;
     proc_stack_size = 0x1000;
     . = . + proc_stack_size * max_procs;
     usr_stacks = .;

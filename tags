@@ -1,0 +1,511 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACK_FAIL	device/disk.py	/^ACK_FAIL = '01'$/;"	v
+ACK_OKAY	device/disk.py	/^ACK_OKAY = '00'$/;"	v
+APPEND	kernel/file.h	/^    APPEND$/;"	e	enum:__anon2
+BITMAP_LENGTH	kernel/file.h	14;"	d
+BLOCK_LENGTH	kernel/file.h	13;"	d
+BPR	device/GIC.h	/^          RW uint32_t        BPR;       \/\/ 0x0008          : binary point$/;"	m	struct:__anon16
+CFGSW	device/SYS.h	/^          RO uint32_t CFGSW;            \/\/ 0x0058          : user switch configuration$/;"	m	struct:__anon10
+CLCD	device/SYS.h	/^          RW uint32_t CLCD;             \/\/ 0x0050          : colour LCD power and multiplexing$/;"	m	struct:__anon10
+CLKDIV	device/PL050.h	/^          RW uint32_t CLKDIV;           \/\/ 0x000C          : clock divisor$/;"	m	struct:__anon15
+COUNTER_100HZ	device/SYS.h	/^          RO uint32_t COUNTER_100HZ;    \/\/ 0x0024          : 100Hz counter$/;"	m	struct:__anon10
+COUNTER_24MHZ	device/SYS.h	/^          RO uint32_t COUNTER_24MHZ;    \/\/ 0x005C          : 24MHz counter$/;"	m	struct:__anon10
+CR	device/PL011.h	/^          RW uint32_t    CR;            \/\/ 0x0030          :      control$/;"	m	struct:__anon13
+CR	device/PL050.h	/^          RW uint32_t CR;               \/\/ 0x0000          : control$/;"	m	struct:__anon15
+CREATED	kernel/process.h	/^    CREATED,$/;"	e	enum:__anon7
+CTLR	device/GIC.h	/^          RW uint32_t       CTLR;       \/\/ 0x0000          : control$/;"	m	struct:__anon16
+CTLR	device/GIC.h	/^          RW uint32_t       CTLR;       \/\/ 0x0000          : control$/;"	m	struct:__anon17
+ClcdCrsrClip	device/PL111.h	/^          RW uint32_t ClcdCrsrClip;         \/\/ 0x0C14          : cursor clip position$/;"	m	struct:__anon18
+ClcdCrsrConfig	device/PL111.h	/^          RW uint32_t ClcdCrsrConfig;       \/\/ 0x0C04          : cursor configuration$/;"	m	struct:__anon18
+ClcdCrsrCtrl	device/PL111.h	/^          RW uint32_t ClcdCrsrCtrl;         \/\/ 0x0C00          : cursor control$/;"	m	struct:__anon18
+ClcdCrsrICR	device/PL111.h	/^          WO uint32_t ClcdCrsrICR;          \/\/ 0x0C24          : cursor        interrupt clear$/;"	m	struct:__anon18
+ClcdCrsrIMSC	device/PL111.h	/^          RW uint32_t ClcdCrsrIMSC;         \/\/ 0x0C20          : cursor        interrupt mask$/;"	m	struct:__anon18
+ClcdCrsrImage	device/PL111.h	/^          RW uint32_t ClcdCrsrImage[ 256 ]; \/\/ 0x0800...0x0BFC : cursor image$/;"	m	struct:__anon18
+ClcdCrsrMIS	device/PL111.h	/^          RO uint32_t ClcdCrsrMIS;          \/\/ 0x0C2C          : cursor masked interrupt status$/;"	m	struct:__anon18
+ClcdCrsrPalette0	device/PL111.h	/^          RW uint32_t ClcdCrsrPalette0;     \/\/ 0x0C08...0x0C0C : cursor palette $/;"	m	struct:__anon18
+ClcdCrsrPalette1	device/PL111.h	/^          RW uint32_t ClcdCrsrPalette1;     \/\/ 0x0C08...0x0C0C : cursor palette $/;"	m	struct:__anon18
+ClcdCrsrRIS	device/PL111.h	/^          RO uint32_t ClcdCrsrRIS;          \/\/ 0x0C28          : cursor raw    interrupt status$/;"	m	struct:__anon18
+ClcdCrsrXY	device/PL111.h	/^          RW uint32_t ClcdCrsrXY;           \/\/ 0x0C10          : cursor      position$/;"	m	struct:__anon18
+DATA	device/PL050.h	/^          RW uint32_t DATA;             \/\/ 0x0008          : data$/;"	m	struct:__anon15
+DATA	kernel/file.h	/^    DATA$/;"	e	enum:__anon1
+DATA_BLOCKS	kernel/file.h	16;"	d
+DEBUG	device/SYS.h	/^          RW uint32_t DEBUG;            \/\/ 0x00F8          : debug unit  configuration$/;"	m	struct:__anon10
+DIRECTORY	kernel/file.h	/^    DIRECTORY,$/;"	e	enum:__anon1
+DISK_FAILURE	device/disk.h	31;"	d
+DISK_RETRY	device/disk.h	28;"	d
+DISK_SUCCESS	device/disk.h	30;"	d
+DMACR	device/PL011.h	/^          RW uint32_t DMACR;            \/\/ 0x0048          : DMA control$/;"	m	struct:__anon13
+DMAPSR	device/SYS.h	/^          RW uint32_t DMAPSR;           \/\/ 0x0064          : DMA mapping$/;"	m	struct:__anon10
+DR	device/PL011.h	/^          RW uint32_t    DR;            \/\/ 0x0000          : data$/;"	m	struct:__anon13
+ECR	device/PL011.h	/^          RW uint32_t   ECR;         }; \/\/                 | error   clear$/;"	m	union:__anon13::__anon14
+EOIR	device/GIC.h	/^          WO uint32_t       EOIR;       \/\/ 0x0010          : end of interrupt$/;"	m	struct:__anon16
+EXIT_FAILURE	user/libc.h	38;"	d
+EXIT_SUCCESS	user/libc.h	37;"	d
+FBRD	device/PL011.h	/^          RW uint32_t  FBRD;            \/\/ 0x0028          : fractional baud rate$/;"	m	struct:__anon13
+FLAGS	device/SYS.h	/^  union { RO uint32_t FLAGS;            \/\/ 0x0030          : general-purpose              flags$/;"	m	union:__anon10::__anon11
+FLAGSCLR	device/SYS.h	/^          WO uint32_t FLAGSCLR;         \/\/ 0x0034          : general-purpose              flags clear$/;"	m	struct:__anon10
+FLAGSSET	device/SYS.h	/^          WO uint32_t FLAGSSET;      }; \/\/ 0x0030          | general-purpose              flags set$/;"	m	union:__anon10::__anon11
+FLASH	device/SYS.h	/^          RW uint32_t FLASH;            \/\/ 0x004C          : flash write protection$/;"	m	struct:__anon10
+FR	device/PL011.h	/^          RO uint32_t    FR;            \/\/ 0x0018          : flag$/;"	m	struct:__anon13
+GICC0	device/GIC.c	/^GICC_t* GICC0 = ( GICC_t* )( 0x1E000000 );$/;"	v
+GICC1	device/GIC.c	/^GICC_t* GICC1 = ( GICC_t* )( 0x1E010000 );$/;"	v
+GICC2	device/GIC.c	/^GICC_t* GICC2 = ( GICC_t* )( 0x1E020000 );$/;"	v
+GICC3	device/GIC.c	/^GICC_t* GICC3 = ( GICC_t* )( 0x1E030000 );$/;"	v
+GICC_t	device/GIC.h	/^} GICC_t;$/;"	t	typeref:struct:__anon16
+GICD0	device/GIC.c	/^GICD_t* GICD0 = ( GICD_t* )( 0x1E001000 );$/;"	v
+GICD1	device/GIC.c	/^GICD_t* GICD1 = ( GICD_t* )( 0x1E011000 );$/;"	v
+GICD2	device/GIC.c	/^GICD_t* GICD2 = ( GICD_t* )( 0x1E021000 );$/;"	v
+GICD3	device/GIC.c	/^GICD_t* GICD3 = ( GICD_t* )( 0x1E031000 );$/;"	v
+GICD_t	device/GIC.h	/^} GICD_t;$/;"	t	typeref:struct:__anon17
+GIC_SOURCE_PS20	device/GIC.h	101;"	d
+GIC_SOURCE_PS21	device/GIC.h	102;"	d
+GIC_SOURCE_TIMER0	device/GIC.h	91;"	d
+GIC_SOURCE_TIMER1	device/GIC.h	92;"	d
+GIC_SOURCE_TIMER2	device/GIC.h	93;"	d
+GIC_SOURCE_TIMER3	device/GIC.h	94;"	d
+GIC_SOURCE_UART0	device/GIC.h	96;"	d
+GIC_SOURCE_UART1	device/GIC.h	97;"	d
+GIC_SOURCE_UART2	device/GIC.h	98;"	d
+GIC_SOURCE_UART3	device/GIC.h	99;"	d
+HPPIR	device/GIC.h	/^          RO uint32_t      HPPIR;       \/\/ 0x0018          : highest pending interrupt$/;"	m	struct:__anon16
+IAR	device/GIC.h	/^          RO uint32_t        IAR;       \/\/ 0x000C          : interrupt acknowledge$/;"	m	struct:__anon16
+IBRD	device/PL011.h	/^          RW uint32_t  IBRD;            \/\/ 0x0024          : integer    baud rate$/;"	m	struct:__anon13
+ICENABLER0	device/GIC.h	/^          RW uint32_t  ICENABLER0;      \/\/ 0x0180          : clear-enable$/;"	m	struct:__anon17
+ICENABLER1	device/GIC.h	/^          RW uint32_t  ICENABLER1;      \/\/ 0x0184          : clear-enable$/;"	m	struct:__anon17
+ICENABLER2	device/GIC.h	/^          RW uint32_t  ICENABLER2;      \/\/ 0x0188          : clear-enable$/;"	m	struct:__anon17
+ICFGR0	device/GIC.h	/^          RW uint32_t      ICFGR0;      \/\/ 0x0C00          : configuration$/;"	m	struct:__anon17
+ICFGR1	device/GIC.h	/^          RW uint32_t      ICFGR1;      \/\/ 0x0C04          : configuration$/;"	m	struct:__anon17
+ICFGR2	device/GIC.h	/^          RW uint32_t      ICFGR2;      \/\/ 0x0C08          : configuration$/;"	m	struct:__anon17
+ICFGR3	device/GIC.h	/^          RW uint32_t      ICFGR3;      \/\/ 0x0C0C          : configuration$/;"	m	struct:__anon17
+ICFGR4	device/GIC.h	/^          RW uint32_t      ICFGR4;      \/\/ 0x0C10          : configuration$/;"	m	struct:__anon17
+ICFGR5	device/GIC.h	/^          RW uint32_t      ICFGR5;      \/\/ 0x0C14          : configuration$/;"	m	struct:__anon17
+ICPENDR0	device/GIC.h	/^          RW uint32_t    ICPENDR0;      \/\/ 0x0280          : clear-pending$/;"	m	struct:__anon17
+ICPENDR1	device/GIC.h	/^          RW uint32_t    ICPENDR1;      \/\/ 0x0284          : clear-pending$/;"	m	struct:__anon17
+ICPENDR2	device/GIC.h	/^          RW uint32_t    ICPENDR2;      \/\/ 0x0288          : clear-pending$/;"	m	struct:__anon17
+ICR	device/PL011.h	/^          WO uint32_t   ICR;            \/\/ 0x0044          :        interrupt clear$/;"	m	struct:__anon13
+ID	device/SYS.h	/^          RO uint32_t ID;               \/\/ 0x0000          : system identifier$/;"	m	struct:__anon10
+IFLS	device/PL011.h	/^          RW uint32_t  IFLS;            \/\/ 0x0034          :        interrupt level select $/;"	m	struct:__anon13
+IMSC	device/PL011.h	/^          RW uint32_t  IMSC;            \/\/ 0x0038          :        interrupt mask$/;"	m	struct:__anon13
+INODES	kernel/file.h	15;"	d
+IPRIORITYR	device/GIC.h	/^          RW uint32_t IPRIORITYR[ 24 ]; \/\/ 0x0400...0x045C : priority$/;"	m	struct:__anon17
+IR	device/PL050.h	/^          RO uint32_t IR;               \/\/ 0x0010          : interrupt status$/;"	m	struct:__anon15
+ISACTIVER0	device/GIC.h	/^          RW uint32_t  ISACTIVER0;      \/\/ 0x0300          :   set-active$/;"	m	struct:__anon17
+ISACTIVER1	device/GIC.h	/^          RW uint32_t  ISACTIVER1;      \/\/ 0x0304          :   set-active$/;"	m	struct:__anon17
+ISACTIVER2	device/GIC.h	/^          RW uint32_t  ISACTIVER2;      \/\/ 0x0308          :   set-active$/;"	m	struct:__anon17
+ISENABLER0	device/GIC.h	/^          RW uint32_t  ISENABLER0;      \/\/ 0x0100          :   set-enable$/;"	m	struct:__anon17
+ISENABLER1	device/GIC.h	/^          RW uint32_t  ISENABLER1;      \/\/ 0x0104          :   set-enable$/;"	m	struct:__anon17
+ISENABLER2	device/GIC.h	/^          RW uint32_t  ISENABLER2;      \/\/ 0x0108          :   set-enable$/;"	m	struct:__anon17
+ISPENDR0	device/GIC.h	/^          RW uint32_t    ISPENDR0;      \/\/ 0x0200          :   set-pending$/;"	m	struct:__anon17
+ISPENDR1	device/GIC.h	/^          RW uint32_t    ISPENDR1;      \/\/ 0x0204          :   set-pending$/;"	m	struct:__anon17
+ISPENDR2	device/GIC.h	/^          RW uint32_t    ISPENDR2;      \/\/ 0x0208          :   set-pending$/;"	m	struct:__anon17
+ITARGETSR	device/GIC.h	/^          RO uint32_t  ITARGETSR[ 24 ]; \/\/ 0x0800...0x085C : processor target$/;"	m	struct:__anon17
+LCD	device/PL111.c	/^PL111_t* LCD = ( PL111_t* )( 0x10020000 );$/;"	v
+LCDControl	device/PL111.h	/^          RW uint32_t LCDControl;           \/\/ 0x0018          : control$/;"	m	struct:__anon18
+LCDICR	device/PL111.h	/^          WO uint32_t LCDICR;               \/\/ 0x0028          :               interrupt clear$/;"	m	struct:__anon18
+LCDIMSC	device/PL111.h	/^          RW uint32_t LCDIMSC;              \/\/ 0x001C          :               interrupt mask$/;"	m	struct:__anon18
+LCDLPBASE	device/PL111.h	/^          RW uint32_t LCDLPBASE;            \/\/ 0x0014          : lower panel base    address$/;"	m	struct:__anon18
+LCDLPCURR	device/PL111.h	/^          RO uint32_t LCDLPCURR;            \/\/ 0x0030          : lower panel current address$/;"	m	struct:__anon18
+LCDMIS	device/PL111.h	/^          RO uint32_t LCDMIS;               \/\/ 0x0024          :        masked interrupt status$/;"	m	struct:__anon18
+LCDPalette	device/PL111.h	/^          RW uint16_t LCDPalette[ 256 ];    \/\/ 0x0200...0x03FC : color palette$/;"	m	struct:__anon18
+LCDRIS	device/PL111.h	/^          RO uint32_t LCDRIS;               \/\/ 0x0020          :        raw    interrupt status$/;"	m	struct:__anon18
+LCDTiming0	device/PL111.h	/^          RW uint32_t LCDTiming0;           \/\/ 0x0000          : horizontal axis$/;"	m	struct:__anon18
+LCDTiming1	device/PL111.h	/^          RW uint32_t LCDTiming1;           \/\/ 0x0004          : vertical   axis$/;"	m	struct:__anon18
+LCDTiming2	device/PL111.h	/^          RW uint32_t LCDTiming2;           \/\/ 0x0008          : clock and signal polarity$/;"	m	struct:__anon18
+LCDTiming3	device/PL111.h	/^          RW uint32_t LCDTiming3;           \/\/ 0x000C          : line end                 $/;"	m	struct:__anon18
+LCDUPBASE	device/PL111.h	/^          RW uint32_t LCDUPBASE;            \/\/ 0x0010          : upper panel base    address$/;"	m	struct:__anon18
+LCDUPCURR	device/PL111.h	/^          RO uint32_t LCDUPCURR;            \/\/ 0x002C          : upper panel current address$/;"	m	struct:__anon18
+LCR	device/PL011.h	/^          RW uint32_t   LCR;            \/\/ 0x002C          : line control $/;"	m	struct:__anon13
+LED	device/SYS.h	/^          RW uint32_t LED;              \/\/ 0x0008          : user LED$/;"	m	struct:__anon10
+LINARO_PATH	Makefile	/^LINARO_PATH = \/usr\/local\/gcc-linaro-x86_64_arm-eabi$/;"	m
+LINARO_PREFIX	Makefile	/^LINARO_PREFIX = arm-eabi$/;"	m
+LOCK	device/SYS.h	/^          RW uint32_t LOCK;             \/\/ 0x0020          : lock control$/;"	m	struct:__anon10
+LPR	device/PL011.h	/^          RW uint32_t   LPR;            \/\/ 0x0020          : low-power counter$/;"	m	struct:__anon13
+MAX_CMD_ARGS	user/console.h	12;"	d
+MAX_CMD_CHARS	user/console.h	11;"	d
+MAX_FILES	kernel/process.h	11;"	d
+MAX_PATH	kernel/process.h	13;"	d
+MAX_PRIORITY	kernel/process.h	12;"	d
+MCI	device/SYS.h	/^          RO uint32_t MCI;              \/\/ 0x0048          : MCI status$/;"	m	struct:__anon10
+MIS	device/PL011.h	/^          RO uint32_t   MIS;            \/\/ 0x0040          : masked interrupt status$/;"	m	struct:__anon13
+MISC	device/SYS.h	/^          RO uint32_t MISC;             \/\/ 0x0060          : miscellaneous$/;"	m	struct:__anon10
+NVFLAGS	device/SYS.h	/^  union { RO uint32_t NVFLAGS;          \/\/ 0x0038          : general-purpose non-volatile flags $/;"	m	union:__anon10::__anon12
+NVFLAGSCLR	device/SYS.h	/^          WO uint32_t NVFLAGSCLR;       \/\/ 0x003C          : general-purpose non-volatile flags clear$/;"	m	struct:__anon10
+NVFLAGSSET	device/SYS.h	/^          WO uint32_t NVFLAGSSET;    }; \/\/ 0x0038          | general-purpose non-volatile flags set$/;"	m	union:__anon10::__anon12
+OSC0	device/SYS.h	/^          RW uint32_t OSC0;             \/\/ 0x000C          : oscillator  configuration$/;"	m	struct:__anon10
+OSC1	device/SYS.h	/^          RW uint32_t OSC1;             \/\/ 0x0010          : oscillator  configuration$/;"	m	struct:__anon10
+OSC2	device/SYS.h	/^          RW uint32_t OSC2;             \/\/ 0x0014          : oscillator  configuration$/;"	m	struct:__anon10
+OSC3	device/SYS.h	/^          RW uint32_t OSC3;             \/\/ 0x0018          : oscillator  configuration$/;"	m	struct:__anon10
+OSC4	device/SYS.h	/^          RW uint32_t OSC4;             \/\/ 0x001C          : oscillator  configuration$/;"	m	struct:__anon10
+OSC5	device/SYS.h	/^          RW uint32_t OSC5;             \/\/ 0x00D4          : oscillator  configuration$/;"	m	struct:__anon10
+OSC6	device/SYS.h	/^          RW uint32_t OSC6;             \/\/ 0x00D8          : oscillator  configuration$/;"	m	struct:__anon10
+OSC7	device/SYS.h	/^          RW uint32_t OSC7;             \/\/ 0x00EC          : oscillator  configuration$/;"	m	struct:__anon10
+OSCRESET0	device/SYS.h	/^          RW uint32_t OSCRESET0;        \/\/ 0x008C          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET1	device/SYS.h	/^          RW uint32_t OSCRESET1;        \/\/ 0x0090          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET2	device/SYS.h	/^          RW uint32_t OSCRESET2;        \/\/ 0x0094          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET3	device/SYS.h	/^          RW uint32_t OSCRESET3;        \/\/ 0x0098          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET4	device/SYS.h	/^          RW uint32_t OSCRESET4;        \/\/ 0x009A          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET5	device/SYS.h	/^          RW uint32_t OSCRESET5;        \/\/ 0x00DC          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET6	device/SYS.h	/^          RW uint32_t OSCRESET6;        \/\/ 0x00E0          : oscillator reset value$/;"	m	struct:__anon10
+OSCRESET7	device/SYS.h	/^          RW uint32_t OSCRESET7;        \/\/ 0x00F0          : oscillator reset value$/;"	m	struct:__anon10
+PCI_STAT	device/SYS.h	/^          RW uint32_t PCI_STAT;         \/\/ 0x006C          : PCI         status$/;"	m	struct:__anon10
+PCellID0	device/PL011.h	/^          RO uint32_t  PCellID0;        \/\/ 0x0FF0          : PrimeCell  ID$/;"	m	struct:__anon13
+PCellID0	device/PL111.h	/^          RO uint32_t  PCellID0;            \/\/ 0x0FF0          : PrimeCell  ID$/;"	m	struct:__anon18
+PCellID0	device/SP804.h	/^          RO uint32_t  PCellID0;        \/\/ 0x0FF0          : PrimeCell  ID$/;"	m	struct:__anon9
+PCellID1	device/PL011.h	/^          RO uint32_t  PCellID1;        \/\/ 0x0FF4          : PrimeCell  ID$/;"	m	struct:__anon13
+PCellID1	device/PL111.h	/^          RO uint32_t  PCellID1;            \/\/ 0x0FF4          : PrimeCell  ID$/;"	m	struct:__anon18
+PCellID1	device/SP804.h	/^          RO uint32_t  PCellID1;        \/\/ 0x0FF4          : PrimeCell  ID$/;"	m	struct:__anon9
+PCellID2	device/PL011.h	/^          RO uint32_t  PCellID2;        \/\/ 0x0FF8          : PrimeCell  ID$/;"	m	struct:__anon13
+PCellID2	device/PL111.h	/^          RO uint32_t  PCellID2;            \/\/ 0x0FF8          : PrimeCell  ID$/;"	m	struct:__anon18
+PCellID2	device/SP804.h	/^          RO uint32_t  PCellID2;        \/\/ 0x0FF8          : PrimeCell  ID$/;"	m	struct:__anon9
+PCellID3	device/PL011.h	/^          RO uint32_t  PCellID3;        \/\/ 0x0FFC          : PrimeCell  ID$/;"	m	struct:__anon13
+PCellID3	device/PL111.h	/^          RO uint32_t  PCellID3;            \/\/ 0x0FFC          : PrimeCell  ID$/;"	m	struct:__anon18
+PCellID3	device/SP804.h	/^          RO uint32_t  PCellID3;        \/\/ 0x0FFC          : PrimeCell  ID$/;"	m	struct:__anon9
+PEX_STAT	device/SYS.h	/^          RO uint32_t PEX_STAT;         \/\/ 0x0068          : PCI Express status$/;"	m	struct:__anon10
+PHILOSOPHERS	user/dining.c	4;"	d	file:
+PL011_can_getc	device/PL011.c	/^bool    PL011_can_getc( PL011_t* d ) {$/;"	f
+PL011_can_putc	device/PL011.c	/^bool    PL011_can_putc( PL011_t* d ) {$/;"	f
+PL011_getc	device/PL011.c	/^uint8_t PL011_getc( PL011_t* d,            bool f ) {$/;"	f
+PL011_geth	device/PL011.c	/^uint8_t PL011_geth( PL011_t* d,            bool f ) {$/;"	f
+PL011_putc	device/PL011.c	/^void    PL011_putc( PL011_t* d, uint8_t x, bool f ) {$/;"	f
+PL011_puth	device/PL011.c	/^void    PL011_puth( PL011_t* d, uint8_t x, bool f ) {$/;"	f
+PL011_t	device/PL011.h	/^} PL011_t;$/;"	t	typeref:struct:__anon13
+PL050_getc	device/PL050.c	/^uint8_t PL050_getc( PL050_t* d            ) {$/;"	f
+PL050_putc	device/PL050.c	/^void    PL050_putc( PL050_t* d, uint8_t x ) {$/;"	f
+PL050_t	device/PL050.h	/^} PL050_t;$/;"	t	typeref:struct:__anon15
+PL111_t	device/PL111.h	/^} PL111_t;$/;"	t	typeref:struct:__anon18
+PLD_CTRL1	device/SYS.h	/^          RW uint32_t PLD_CTRL1;        \/\/ 0x0074          : PLD         configuration$/;"	m	struct:__anon10
+PLD_CTRL2	device/SYS.h	/^          RW uint32_t PLD_CTRL2;        \/\/ 0x0078          : PLD         configuration$/;"	m	struct:__anon10
+PLL_INIT	device/SYS.h	/^          RW uint32_t PLL_INIT;         \/\/ 0x007C          : PLL         configuration$/;"	m	struct:__anon10
+PLL_RESET	device/SYS.h	/^          RW uint32_t PLL_RESET;        \/\/ 0x0100          : PLL        reset value$/;"	m	struct:__anon10
+PMR	device/GIC.h	/^          RW uint32_t        PMR;       \/\/ 0x0004          : priority mask$/;"	m	struct:__anon16
+PROCID0	device/SYS.h	/^          RO uint32_t PROCID0;          \/\/ 0x0084          : processor ID$/;"	m	struct:__anon10
+PROCID1	device/SYS.h	/^          RO uint32_t PROCID1;          \/\/ 0x0088          : processor ID$/;"	m	struct:__anon10
+PROJECT_HEADERS	Makefile	/^PROJECT_HEADERS = $(shell find ${PROJECT_PATH} -name *.h             )$/;"	m
+PROJECT_OBJECTS	Makefile	/^PROJECT_OBJECTS = $(addsuffix .o, $(basename ${PROJECT_SOURCES}))$/;"	m
+PROJECT_PATH	Makefile	/^PROJECT_PATH = $(shell find . -mindepth 1 -maxdepth 1 -type d)$/;"	m
+PROJECT_SOURCES	Makefile	/^PROJECT_SOURCES = $(shell find ${PROJECT_PATH} -name *.c -o -name *.s)$/;"	m
+PROJECT_TARGETS	Makefile	/^PROJECT_TARGETS = image.elf image.bin$/;"	m
+PS20	device/PL050.c	/^PL050_t* PS20 = ( PL050_t* )( 0x10006000 );$/;"	v
+PS21	device/PL050.c	/^PL050_t* PS21 = ( PL050_t* )( 0x10007000 );$/;"	v
+PeriphID0	device/PL011.h	/^          RO uint32_t PeriphID0;        \/\/ 0x0FE0          : peripheral ID$/;"	m	struct:__anon13
+PeriphID0	device/PL111.h	/^          RO uint32_t PeriphID0;            \/\/ 0x0FE0          : peripheral ID$/;"	m	struct:__anon18
+PeriphID0	device/SP804.h	/^          RO uint32_t PeriphID0;        \/\/ 0x0FE0          : peripheral ID$/;"	m	struct:__anon9
+PeriphID1	device/PL011.h	/^          RO uint32_t PeriphID1;        \/\/ 0x0FE4          : peripheral ID$/;"	m	struct:__anon13
+PeriphID1	device/PL111.h	/^          RO uint32_t PeriphID1;            \/\/ 0x0FE4          : peripheral ID$/;"	m	struct:__anon18
+PeriphID1	device/SP804.h	/^          RO uint32_t PeriphID1;        \/\/ 0x0FE4          : peripheral ID$/;"	m	struct:__anon9
+PeriphID2	device/PL011.h	/^          RO uint32_t PeriphID2;        \/\/ 0x0FE8          : peripheral ID$/;"	m	struct:__anon13
+PeriphID2	device/PL111.h	/^          RO uint32_t PeriphID2;            \/\/ 0x0FE8          : peripheral ID$/;"	m	struct:__anon18
+PeriphID2	device/SP804.h	/^          RO uint32_t PeriphID2;        \/\/ 0x0FE8          : peripheral ID$/;"	m	struct:__anon9
+PeriphID3	device/PL011.h	/^          RO uint32_t PeriphID3;        \/\/ 0x0FEC          : peripheral ID$/;"	m	struct:__anon13
+PeriphID3	device/PL111.h	/^          RO uint32_t PeriphID3;            \/\/ 0x0FEC          : peripheral ID$/;"	m	struct:__anon18
+PeriphID3	device/SP804.h	/^          RO uint32_t PeriphID3;        \/\/ 0x0FEC          : peripheral ID$/;"	m	struct:__anon9
+QEMU_DISPLAY	Makefile	/^QEMU_DISPLAY = -nographic -display none $/;"	m
+QEMU_GDB	Makefile	/^QEMU_GDB = 127.0.0.1:1234$/;"	m
+QEMU_PATH	Makefile	/^QEMU_PATH = \/usr$/;"	m
+QEMU_UART	Makefile	/^QEMU_UART = stdio$/;"	m
+READ	kernel/file.h	/^    READ,$/;"	e	enum:__anon2
+READY	kernel/process.h	/^    READY,$/;"	e	enum:__anon7
+REQ_CONF	device/disk.py	/^REQ_CONF = '00'$/;"	v
+REQ_RD	device/disk.py	/^REQ_RD   = '02'$/;"	v
+REQ_WR	device/disk.py	/^REQ_WR   = '01'$/;"	v
+RESETCTL	device/SYS.h	/^          RW uint32_t RESETCTL;         \/\/ 0x0040          : software reset level$/;"	m	struct:__anon10
+RIS	device/PL011.h	/^          RO uint32_t   RIS;            \/\/ 0x003C          : raw    interrupt status$/;"	m	struct:__anon13
+RO	device/device.h	13;"	d
+RPR	device/GIC.h	/^          RO uint32_t        RPR;       \/\/ 0x0014          : running interrupt$/;"	m	struct:__anon16
+RSR	device/PL011.h	/^  union { RW uint32_t   RSR;            \/\/ 0x0004          : receive status$/;"	m	union:__anon13::__anon14
+RSVD	device/device.h	11;"	d
+RUNNING	kernel/process.h	/^    RUNNING,$/;"	e	enum:__anon7
+RW	device/device.h	15;"	d
+SGIR	device/GIC.h	/^          WO uint32_t       SGIR;       \/\/ 0x0F00          : software interrupt$/;"	m	struct:__anon17
+SIG_QUIT	user/libc.h	34;"	d
+SIG_TERM	user/libc.h	33;"	d
+SP804_t	device/SP804.h	/^} SP804_t;$/;"	t	typeref:struct:__anon9
+STAT	device/PL050.h	/^          RO uint32_t STAT;             \/\/ 0x0004          : status$/;"	m	struct:__anon15
+STDERR_FILENO	user/libc.h	43;"	d
+STDIN_FILENO	user/libc.h	41;"	d
+STDOUT_FILENO	user/libc.h	42;"	d
+SYSCONF	device/SYS.c	/^SYSCONF_t* SYSCONF  = ( SYSCONF_t* )( 0x10000000 );$/;"	v
+SYSCONF_t	device/SYS.h	/^} SYSCONF_t;$/;"	t	typeref:struct:__anon10
+SYSCTRL0	device/SYS.c	/^ uint32_t* SYSCTRL0 = (  uint32_t* )( 0x10001000 );$/;"	v
+SYSCTRL1	device/SYS.c	/^ uint32_t* SYSCTRL1 = (  uint32_t* )( 0x1001A000 );$/;"	v
+SYS_CHDIR	kernel/hilevel.h	46;"	d
+SYS_CHDIR	user/libc.h	27;"	d
+SYS_CLOSE	kernel/hilevel.h	42;"	d
+SYS_CLOSE	user/libc.h	23;"	d
+SYS_EXEC	kernel/hilevel.h	35;"	d
+SYS_EXEC	user/libc.h	16;"	d
+SYS_EXIT	kernel/hilevel.h	34;"	d
+SYS_EXIT	user/libc.h	15;"	d
+SYS_FORK	kernel/hilevel.h	33;"	d
+SYS_FORK	user/libc.h	14;"	d
+SYS_GETCWD	kernel/hilevel.h	47;"	d
+SYS_GETCWD	user/libc.h	28;"	d
+SYS_KILL	kernel/hilevel.h	36;"	d
+SYS_KILL	user/libc.h	17;"	d
+SYS_LISTDIR	kernel/hilevel.h	48;"	d
+SYS_LISTDIR	user/libc.h	29;"	d
+SYS_LIST_PROC	kernel/hilevel.h	40;"	d
+SYS_LIST_PROC	user/libc.h	21;"	d
+SYS_LOAD	kernel/hilevel.h	49;"	d
+SYS_LOAD	user/libc.h	30;"	d
+SYS_MKDIR	kernel/hilevel.h	44;"	d
+SYS_MKDIR	user/libc.h	25;"	d
+SYS_NICE	kernel/hilevel.h	37;"	d
+SYS_NICE	user/libc.h	18;"	d
+SYS_OPEN	kernel/hilevel.h	41;"	d
+SYS_OPEN	user/libc.h	22;"	d
+SYS_READ	kernel/hilevel.h	32;"	d
+SYS_READ	user/libc.h	13;"	d
+SYS_REMOVE	kernel/hilevel.h	43;"	d
+SYS_REMOVE	user/libc.h	24;"	d
+SYS_RMDIR	kernel/hilevel.h	45;"	d
+SYS_RMDIR	user/libc.h	26;"	d
+SYS_SEM_CLOSE	kernel/hilevel.h	39;"	d
+SYS_SEM_CLOSE	user/libc.h	20;"	d
+SYS_SEM_INIT	kernel/hilevel.h	38;"	d
+SYS_SEM_INIT	user/libc.h	19;"	d
+SYS_WRITE	kernel/hilevel.h	31;"	d
+SYS_WRITE	user/libc.h	12;"	d
+SYS_YIELD	kernel/hilevel.h	30;"	d
+SYS_YIELD	user/libc.h	11;"	d
+TERMINATED	kernel/process.h	/^    TERMINATED$/;"	e	enum:__anon7
+TESTMODE	device/SYS.h	/^          RW uint32_t TESTMODE;         \/\/ 0x00FC          : test mode   configuration$/;"	m	struct:__anon10
+TEST_OSC0	device/SYS.h	/^          RO uint32_t TEST_OSC0;        \/\/ 0x00C0          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC1	device/SYS.h	/^          RO uint32_t TEST_OSC1;        \/\/ 0x00C4          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC2	device/SYS.h	/^          RO uint32_t TEST_OSC2;        \/\/ 0x00C8          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC3	device/SYS.h	/^          RO uint32_t TEST_OSC3;        \/\/ 0x00CC          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC4	device/SYS.h	/^          RO uint32_t TEST_OSC4;        \/\/ 0x00D0          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC5	device/SYS.h	/^          RO uint32_t TEST_OSC5;        \/\/ 0x00E4          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC6	device/SYS.h	/^          RO uint32_t TEST_OSC6;        \/\/ 0x00E8          : oscillator driven counter$/;"	m	struct:__anon10
+TEST_OSC7	device/SYS.h	/^          RO uint32_t TEST_OSC7;        \/\/ 0x00F4          : oscillator driven counter$/;"	m	struct:__anon10
+TIMER0	device/SP804.c	/^SP804_t* TIMER0 = ( SP804_t* )( 0x10011000 );$/;"	v
+TIMER1	device/SP804.c	/^SP804_t* TIMER1 = ( SP804_t* )( 0x10012000 );$/;"	v
+TIMER2	device/SP804.c	/^SP804_t* TIMER2 = ( SP804_t* )( 0x10018000 );$/;"	v
+TIMER3	device/SP804.c	/^SP804_t* TIMER3 = ( SP804_t* )( 0x10019000 );$/;"	v
+TYPER	device/GIC.h	/^          RO uint32_t      TYPER;       \/\/ 0x0004          : controller type$/;"	m	struct:__anon17
+Timer1BGLoad	device/SP804.h	/^          RW uint32_t Timer1BGLoad;     \/\/ 0x0018          : background load$/;"	m	struct:__anon9
+Timer1Ctrl	device/SP804.h	/^          RW uint32_t Timer1Ctrl;       \/\/ 0x0008          : control$/;"	m	struct:__anon9
+Timer1IntClr	device/SP804.h	/^          WO uint32_t Timer1IntClr;     \/\/ 0x000C          :        interrupt clear$/;"	m	struct:__anon9
+Timer1Load	device/SP804.h	/^          RW uint32_t Timer1Load;       \/\/ 0x0000          :            load$/;"	m	struct:__anon9
+Timer1MIS	device/SP804.h	/^          RO uint32_t Timer1MIS;        \/\/ 0x0014          : masked interrupt status$/;"	m	struct:__anon9
+Timer1RIS	device/SP804.h	/^          RO uint32_t Timer1RIS;        \/\/ 0x0010          : raw    interrupt status$/;"	m	struct:__anon9
+Timer1Value	device/SP804.h	/^          RO uint32_t Timer1Value;      \/\/ 0x0004          : current value$/;"	m	struct:__anon9
+Timer2BGLoad	device/SP804.h	/^          RW uint32_t Timer2BGLoad;     \/\/ 0x0038          : background load  $/;"	m	struct:__anon9
+Timer2Ctrl	device/SP804.h	/^          RW uint32_t Timer2Ctrl;       \/\/ 0x0028          : control$/;"	m	struct:__anon9
+Timer2IntClr	device/SP804.h	/^          WO uint32_t Timer2IntClr;     \/\/ 0x002C          :        interrupt clear$/;"	m	struct:__anon9
+Timer2Load	device/SP804.h	/^          RW uint32_t Timer2Load;       \/\/ 0x0020          :            load$/;"	m	struct:__anon9
+Timer2MIS	device/SP804.h	/^          RO uint32_t Timer2MIS;        \/\/ 0x0034          : masked interrupt status$/;"	m	struct:__anon9
+Timer2RIS	device/SP804.h	/^          RO uint32_t Timer2RIS;        \/\/ 0x0030          : raw    interrupt status$/;"	m	struct:__anon9
+Timer2Value	device/SP804.h	/^          RO uint32_t Timer2Value;      \/\/ 0x0024          : current value$/;"	m	struct:__anon9
+TimerITCR	device/SP804.h	/^          RW uint32_t TimerITCR;        \/\/ 0x0F00          : integration test$/;"	m	struct:__anon9
+TimerITOP	device/SP804.h	/^          WO uint32_t TimerITOP;        \/\/ 0x0F04          : integration test$/;"	m	struct:__anon9
+UART0	device/PL011.c	/^PL011_t* UART0 = ( PL011_t* )( 0x10009000 );$/;"	v
+UART1	device/PL011.c	/^PL011_t* UART1 = ( PL011_t* )( 0x1000A000 );$/;"	v
+UART2	device/PL011.c	/^PL011_t* UART2 = ( PL011_t* )( 0x1000B000 );$/;"	v
+UART3	device/PL011.c	/^PL011_t* UART3 = ( PL011_t* )( 0x1000C000 );$/;"	v
+USERSW	device/SYS.h	/^          RO uint32_t USERSW;           \/\/ 0x0004          : user switch$/;"	m	struct:__anon10
+VOLTAGE_CTL0	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL0;     \/\/ 0x00A0          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL1	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL1;     \/\/ 0x00A4          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL2	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL2;     \/\/ 0x00A8          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL3	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL3;     \/\/ 0x00AA          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL4	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL4;     \/\/ 0x00AC          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL5	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL5;     \/\/ 0x00B0          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL6	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL6;     \/\/ 0x00B4          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL7	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL7;     \/\/ 0x00B8          : voltate control\/monitoring$/;"	m	struct:__anon10
+VOLTAGE_CTL8	device/SYS.h	/^          RW uint32_t VOLTAGE_CTL8;     \/\/ 0x00BC          : voltate control\/monitoring$/;"	m	struct:__anon10
+WAITING	kernel/process.h	/^    WAITING,$/;"	e	enum:__anon7
+WO	device/device.h	14;"	d
+WR	device/device.h	16;"	d
+WRITE	kernel/file.h	/^    WRITE,$/;"	e	enum:__anon2
+__CONSOLE_H	user/console.h	2;"	d
+__DEVICE_H	device/device.h	9;"	d
+__DISK_H	device/disk.h	9;"	d
+__FILE_H	kernel/file.h	2;"	d
+__GIC_H	device/GIC.h	9;"	d
+__HILEVEL_H	kernel/hilevel.h	2;"	d
+__INT_H	kernel/int.h	2;"	d
+__LIBC_H	user/libc.h	2;"	d
+__MMU_H	device/MMU.h	9;"	d
+__PL011_H	device/PL011.h	9;"	d
+__PL050_H	device/PL050.h	9;"	d
+__PL111_H	device/PL111.h	9;"	d
+__PROCCESS_H	kernel/process.h	2;"	d
+__SP804_H	device/SP804.h	9;"	d
+__SYS_H	device/SYS.h	9;"	d
+access	kernel/file.h	/^    access_t access;$/;"	m	struct:__anon5
+access_t	kernel/file.h	/^} access_t;$/;"	t	typeref:enum:__anon2
+ack	device/disk.py	/^      ack =   rd( fd, req )$/;"	v
+ack	device/disk.py	/^      ack =   wr( fd, req )$/;"	v
+ack	device/disk.py	/^      ack = [ ACK_FAIL ]$/;"	v
+ack	device/disk.py	/^      ack = ack[ 0 ] + ' ' + ' '.join( [ binascii.hexlify( x ) for x in ack[ 1 : ] ] )$/;"	v
+ack	device/disk.py	/^      ack = ack[ 0 ]$/;"	v
+ack	device/disk.py	/^      ack = conf( fd, req )$/;"	v
+add_inode_data	kernel/file.c	/^void add_inode_data(inode_t *inode, int inode_num, int ptr, uint8_t* block) {$/;"	f
+addr_puth	device/disk.c	/^void addr_puth( PL011_t* d,       uint32_t x,        bool f ) {$/;"	f
+args	device/disk.py	/^  args = parser.parse_args()$/;"	v
+atoi	user/libc.c	/^int atoi(char* x) {$/;"	f
+calculate_path	kernel/hilevel.c	/^void calculate_path(char* initial_path, char* added_path) {$/;"	f
+chdir	user/libc.c	/^void chdir(const char* path) {$/;"	f
+check_and_claim_block	kernel/file.c	/^int check_and_claim_block(int block_num) {$/;"	f
+claim_data_block	kernel/file.c	/^int claim_data_block() {$/;"	f
+claim_inode_block	kernel/file.c	/^int claim_inode_block() {$/;"	f
+close	user/libc.c	/^void close(int fd) {$/;"	f
+conf	device/disk.py	/^def conf( fd, req ) :$/;"	f
+cpsr	kernel/process.h	/^    uint32_t cpsr, pc, gpr[13], sp, lr;$/;"	m	struct:__anon6
+create_PCB	kernel/process.c	/^pcb_t* create_PCB(const char* name, uint32_t entryPoint, pcb_t* parent) {$/;"	f
+create_list	kernel/process.c	/^plist_t* create_list() {$/;"	f
+ctx	kernel/process.h	/^    ctx_t ctx;$/;"	m	struct:pcb_t
+ctx_t	kernel/process.h	/^} ctx_t;$/;"	t	typeref:struct:__anon6
+cwd	kernel/process.h	/^    char* cwd;$/;"	m	struct:pcb_t
+cwd	user/console.c	/^char cwd[1024];$/;"	v
+data	kernel/process.h	/^    pcb_t* data;$/;"	m	struct:pnode_t
+data_geth	device/disk.c	/^void data_geth( PL011_t* d,       uint8_t* x, int n, bool f ) {$/;"	f
+data_puth	device/disk.c	/^void data_puth( PL011_t* d, const uint8_t* x, int n, bool f ) {$/;"	f
+delete_list	kernel/process.c	/^pcb_t* delete_list(plist_t* l, int pid) {$/;"	f
+destroy_PCB	kernel/process.c	/^void destroy_PCB(pcb_t* p) {$/;"	f
+dir_entry_t	kernel/file.h	/^} dir_entry_t;$/;"	t	typeref:struct:__anon3
+directptrs	kernel/file.h	/^    uint32_t directptrs[12];$/;"	m	struct:__anon4
+disk	format.py	/^disk = open("disk.bin", 'r+b')$/;"	v
+disk_get_block_len	device/disk.c	/^int disk_get_block_len() {$/;"	f
+disk_get_block_num	device/disk.c	/^int disk_get_block_num() {$/;"	f
+disk_rd	device/disk.c	/^int disk_rd( uint32_t a,       uint8_t* x) {$/;"	f
+disk_wr	device/disk.c	/^int disk_wr( uint32_t a, const uint8_t* x) {$/;"	f
+dispatch	kernel/hilevel.c	/^void dispatch(ctx_t* ctx, pcb_t* new) {$/;"	f
+exec	user/libc.c	/^void exec( const void* x ) {$/;"	f
+exit	user/libc.c	/^void exit( int x ) {$/;"	f
+fcb_t	kernel/file.h	/^} fcb_t;$/;"	t	typeref:struct:__anon5
+fd	device/disk.py	/^  fd = os.open( args.file, os.O_RDWR )$/;"	v
+fd	kernel/file.h	/^    int fd;$/;"	m	struct:__anon5
+fdtable	kernel/process.h	/^    int fdtable[MAX_FILES];$/;"	m	struct:pcb_t
+file_t	kernel/file.h	/^} file_t;$/;"	t	typeref:enum:__anon1
+file_table	kernel/hilevel.c	/^fcb_t file_table[MAX_FILES];$/;"	v
+fork	user/libc.c	/^int  fork() {$/;"	f
+forks	user/dining.c	/^uint32_t* forks[PHILOSOPHERS];$/;"	v
+free_block	kernel/file.c	/^void free_block(int block_num) {$/;"	f
+free_data_block	kernel/file.c	/^void free_data_block(int block_num) {$/;"	f
+free_inode_block	kernel/file.c	/^void free_inode_block(int inode_num) {$/;"	f
+free_list	kernel/process.c	/^void free_list(plist_t* l) {$/;"	f
+gcd	user/P4.c	/^uint32_t gcd(uint32_t x, uint32_t y) {$/;"	f
+get_next_fd	kernel/process.c	/^void get_next_fd(pcb_t* p) {$/;"	f
+get_next_global_fd	kernel/hilevel.c	/^void get_next_global_fd() {$/;"	f
+get_stack	kernel/process.c	/^uint32_t get_stack() {$/;"	f
+getcwd	user/libc.c	/^char* getcwd() {$/;"	f
+gets	user/console.c	/^void gets(char* x, int n) {$/;"	f
+gpr	kernel/process.h	/^    uint32_t cpsr, pc, gpr[13], sp, lr;$/;"	m	struct:__anon6
+head	kernel/process.h	/^    pnode_t* head;$/;"	m	struct:__anon8
+hilevel_handler_irq	kernel/hilevel.c	/^void hilevel_handler_irq(ctx_t* ctx) {$/;"	f
+hilevel_handler_rst	kernel/hilevel.c	/^void hilevel_handler_rst(ctx_t* ctx) {$/;"	f
+hilevel_handler_svc	kernel/hilevel.c	/^void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {$/;"	f
+init_stacks	kernel/process.c	/^void init_stacks() {$/;"	f
+inode_num	kernel/file.h	/^    int inode_num;$/;"	m	struct:__anon5
+inode_num	kernel/file.h	/^    uint32_t inode_num;$/;"	m	struct:__anon3
+inode_t	kernel/file.h	/^} inode_t;$/;"	t	typeref:struct:__anon4
+int_addr_irq	kernel/int.s	/^int_addr_irq:$/;"	l
+int_addr_rst	kernel/int.s	/^int_addr_rst:$/;"	l
+int_addr_svc	kernel/int.s	/^int_addr_svc:$/;"	l
+int_data	kernel/int.s	/^int_data:$/;"	l
+int_enable_fiq	kernel/int.s	/^int_enable_fiq:$/;"	l
+int_enable_irq	kernel/int.s	/^int_enable_irq:$/;"	l
+int_init	kernel/int.s	/^int_init:$/;"	l
+int_unable_fiq	kernel/int.s	/^int_unable_fiq:$/;"	l
+int_unable_irq	kernel/int.s	/^int_unable_irq:$/;"	l
+is_empty	kernel/process.c	/^int is_empty(plist_t* l) {$/;"	f
+is_prime	user/P5.c	/^int is_prime(uint32_t x) {$/;"	f
+itoa	user/libc.c	/^void itoa(char* r, int x) {$/;"	f
+itox	device/PL011.c	/^char itox( int  x ) {$/;"	f
+kill	user/libc.c	/^int  kill( int pid, int x ) {$/;"	f
+l	device/disk.py	/^    l = logging.DEBUG$/;"	v
+l	device/disk.py	/^    l = logging.INFO$/;"	v
+l0	kernel/int.s	/^l0:$/;"	l
+list_procs	user/libc.c	/^void list_procs() {$/;"	f
+listdir	user/libc.c	/^void listdir(const char* path) {$/;"	f
+load	user/libc.c	/^void* load(int fd) {$/;"	f
+load_PCB	kernel/hilevel.c	/^void load_PCB(pcb_t* pcb) {$/;"	f
+loader	user/console.c	/^void* loader(char* x) {$/;"	f
+lolevel_handler_irq	kernel/lolevel.s	/^lolevel_handler_irq:$/;"	l
+lolevel_handler_rst	kernel/lolevel.s	/^lolevel_handler_rst:$/;"	l
+lolevel_handler_svc	kernel/lolevel.s	/^lolevel_handler_svc:$/;"	l
+lr	kernel/process.h	/^    uint32_t cpsr, pc, gpr[13], sp, lr;$/;"	m	struct:__anon6
+main_P3	user/P3.c	/^void main_P3() {$/;"	f
+main_P4	user/P4.c	/^void main_P4() {$/;"	f
+main_P5	user/P5.c	/^void main_P5() {$/;"	f
+main_console	user/console.c	/^void main_console() {$/;"	f
+main_dining	user/dining.c	/^void main_dining() {$/;"	f
+make_ready	kernel/hilevel.c	/^void make_ready(pcb_t* pcb) {$/;"	f
+mkdir	user/libc.c	/^void mkdir(const char* path) {$/;"	f
+mmu_enable	device/MMU.s	/^mmu_enable:          mrc   p15, 0, r0, c1, c0, 0 @ read  SCTLR$/;"	l
+mmu_flush	device/MMU.s	/^mmu_flush:           mov   r0,     #0x0$/;"	l
+mmu_set_dom	device/MMU.s	/^mmu_set_dom:         add   r0, r0, r0            @ compute i (index      from domain)$/;"	l
+mmu_set_ptr0	device/MMU.s	/^mmu_set_ptr0:        mcr   p15, 0, r0, c2, c0, 0 @ write TTBR0$/;"	l
+mmu_set_ptr1	device/MMU.s	/^mmu_set_ptr1:        mcr   p15, 0, r0, c2, c0, 1 @ write TTBR1$/;"	l
+mmu_unable	device/MMU.s	/^mmu_unable:          mrc   p15, 0, r0, c1, c0, 0 @ read  SCTLR$/;"	l
+multiq	kernel/hilevel.c	/^plist_t* multiq[MAX_PRIORITY + 1];$/;"	v
+name	kernel/file.h	/^    char name[60];$/;"	m	struct:__anon3
+name	kernel/process.h	/^    char* name;$/;"	m	struct:pcb_t
+next	kernel/process.h	/^    struct pnode_t* next;$/;"	m	struct:pnode_t	typeref:struct:pnode_t::pnode_t
+next_fd	kernel/hilevel.c	/^int next_fd = 4;$/;"	v
+next_fd	kernel/process.h	/^    int next_fd;$/;"	m	struct:pcb_t
+next_pid	kernel/process.c	/^int next_pid = 0;$/;"	v
+nice	user/libc.c	/^void nice( int pid, int x ) {$/;"	f
+num_procs	kernel/process.c	/^int num_procs = 0;$/;"	v
+open	user/libc.c	/^int open(const char* path) {$/;"	f
+parent	kernel/process.h	/^    struct pcb_t* parent;$/;"	m	struct:pcb_t	typeref:struct:pcb_t::pcb_t
+parser	device/disk.py	/^  parser = argparse.ArgumentParser()$/;"	v
+pc	kernel/process.h	/^    uint32_t cpsr, pc, gpr[13], sp, lr;$/;"	m	struct:__anon6
+pcb_t	kernel/process.h	/^typedef struct pcb_t {$/;"	s
+pcb_t	kernel/process.h	/^} pcb_t;$/;"	t	typeref:struct:pcb_t
+philosopher	user/dining.c	/^void philosopher(int id) {$/;"	f
+pid	kernel/process.h	/^    int pid;$/;"	m	struct:pcb_t
+plist_t	kernel/process.h	/^} plist_t;$/;"	t	typeref:struct:__anon8
+pnode_t	kernel/process.h	/^typedef struct pnode_t {$/;"	s
+pnode_t	kernel/process.h	/^} pnode_t;$/;"	t	typeref:struct:pnode_t
+pop_list	kernel/process.c	/^pcb_t* pop_list(plist_t* l) {$/;"	f
+print	user/libc.c	/^void print(char* str) {$/;"	f
+printI	user/libc.c	/^void printI(int i) {$/;"	f
+print_UART	kernel/hilevel.c	/^void print_UART(PL011_t* UART, char* str, int len) {$/;"	f
+priority	kernel/process.h	/^    int priority;$/;"	m	struct:pcb_t
+pstate_t	kernel/process.h	/^} pstate_t;$/;"	t	typeref:enum:__anon7
+ptable	kernel/hilevel.c	/^plist_t* ptable;$/;"	v
+ptos	kernel/process.h	/^    uint32_t ptos;$/;"	m	struct:pcb_t
+push_list	kernel/process.c	/^void push_list(plist_t* l, pcb_t* pcb) {$/;"	f
+rand	user/libc.c	/^uint32_t rand() {$/;"	f
+rd	device/disk.py	/^def   rd( fd, req ) :$/;"	f
+read	user/libc.c	/^int  read( int fd,       void* x, size_t n ) {$/;"	f
+read_data_block	kernel/file.c	/^void read_data_block(int data_block_num, uint8_t* block) {$/;"	f
+read_dir_entry	kernel/file.c	/^void read_dir_entry(int data_block_num, dir_entry_t* dir_entry) {$/;"	f
+read_inode_block	kernel/file.c	/^void read_inode_block(int inode_num, inode_t* inode) {$/;"	f
+remove	user/libc.c	/^void remove(const char* path) {$/;"	f
+req	device/disk.py	/^    req = sd.readline().strip().split( ' ' )$/;"	v
+return_stack	kernel/process.c	/^void return_stack(uint32_t num) {$/;"	f
+rmdir	user/libc.c	/^void rmdir(const char* path) {$/;"	f
+running	kernel/hilevel.c	/^pcb_t* running = NULL;$/;"	v
+s	device/disk.py	/^  s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )$/;"	v
+schedule	kernel/hilevel.c	/^void schedule(ctx_t* ctx) {$/;"	f
+search_list	kernel/process.c	/^pcb_t* search_list(plist_t* l, int pid) {$/;"	f
+sem_close	user/libc.c	/^void sem_close(uint32_t* sem) {$/;"	f
+sem_init	user/libc.c	/^uint32_t* sem_init(int val) {$/;"	f
+sem_post	user/sem.s	/^sem_post:$/;"	l
+sem_wait	user/sem.s	/^sem_wait:$/;"	l
+sp	kernel/process.h	/^    uint32_t cpsr, pc, gpr[13], sp, lr;$/;"	m	struct:__anon6
+stack_num	kernel/process.h	/^    uint32_t stack_num;$/;"	m	struct:pcb_t
+stacks	kernel/process.c	/^uint32_t stacks = 0;$/;"	v
+state	kernel/process.h	/^    pstate_t state;$/;"	m	struct:pcb_t
+tail	kernel/process.h	/^    pnode_t* tail;$/;"	m	struct:__anon8
+timeslice	kernel/process.h	/^    int timeslice;$/;"	m	struct:pcb_t
+traverse_filesystem	kernel/hilevel.c	/^int traverse_filesystem(char* rel_path, char* file_name, inode_t* dir_inode) {$/;"	f
+type	kernel/file.h	/^    file_t type;$/;"	m	struct:__anon3
+type	kernel/file.h	/^    file_t type;$/;"	m	struct:__anon4
+val	user/libc.c	/^uint32_t val = 135;$/;"	v
+weight	user/P3.c	/^uint32_t weight(uint32_t x) {$/;"	f
+wr	device/disk.py	/^def   wr( fd, req ) :$/;"	f
+write	user/libc.c	/^int write( int fd, const void* x, size_t n ) {$/;"	f
+write_data_block	kernel/file.c	/^void write_data_block(int data_block_num, uint8_t* block) {$/;"	f
+write_dir_entry	kernel/file.c	/^void write_dir_entry(int data_block_num, dir_entry_t* dir_entry) {$/;"	f
+write_inode_block	kernel/file.c	/^void write_inode_block(int inode_num, inode_t* inode) {$/;"	f
+xtoi	device/PL011.c	/^int  xtoi( char x ) {$/;"	f
+yield	user/libc.c	/^void yield() {$/;"	f

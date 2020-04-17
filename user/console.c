@@ -35,7 +35,7 @@ void main_console() {
         gets(cmd, MAX_CMD_CHARS);
 
         // Tokenize the input
-        int cmd_argc = 0;
+        int cmd_argc= 0;
         char* cmd_argv[MAX_CMD_ARGS] = {'\0'};
 
         for (char* t = strtok(cmd, " "); t != NULL; t = strtok(NULL," ")) {
@@ -43,7 +43,7 @@ void main_console() {
         }
 
         // Handle the command
-        if (argc == 1) {
+        if (cmd_argc == 1) {
             if (strcmp(cmd_argv[0], "help") == 0) {
                 print("List of commands: \n");
                 print("\texec {PROGRAM} - execute a user process\n");
@@ -59,11 +59,13 @@ void main_console() {
                 print("\tls {DIRPATH} - prints the contents of the given directory\n");
             } else if (strcmp(cmd_argv[0], "list") == 0) {
                 list_procs();
+            } else if (strcmp(cmd_argv[0], "ls") == 0) {
+                listdir("");
             } else {
                 print("Unknown command\n");
                 print("Enter 'help' for a list of commands\n");
             }
-        } else if (argc == 2) {
+        } else if (cmd_argc == 2) {
             if (strcmp(cmd_argv[0], "exec") == 0) {
                 void* addr = loader(cmd_argv[1]);
                 if (addr != NULL) {
@@ -73,7 +75,7 @@ void main_console() {
                 } else {
                     print("Unknown program\n");
                     print("List of available user programs: \n");
-                    print("\tP3 - Looping program that does basic bit arithmetic on some numbers");
+                    print("\tP3 - Looping program that does basic bit arithmetic on some numbers\n");
                     print("\tP4 - Looping program that calculates the gcd of some numbers, includes recursion\n");
                     print("\tP5 - Terminating program that calculates which numbers are prime betweem to values\n");
                     print("\tDining - dining philosophers example program\n");
@@ -102,7 +104,7 @@ void main_console() {
             } else if (strcmp(cmd_argv[0], "ls") == 0) {
                 listdir(cmd_argv[1]);
             } else {
-                print("Unknown command\n");
+                print("Bad command args\n");
                 print("Enter 'help' for a list of commands\n");
             }
         } else {

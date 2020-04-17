@@ -32,7 +32,7 @@ typedef enum {
 typedef struct {
     uint32_t inode_num;
     file_t type;
-    char name[10];
+    char name[60];
 } dir_entry_t;
 
 // Simple inode containing a type and pointers to data
