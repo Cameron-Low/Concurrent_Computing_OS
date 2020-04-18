@@ -139,7 +139,7 @@ void calculate_path(char* initial_path, char* added_path) {
         file = strtok(NULL, "/");
     }
     print_UART(UART0, initial_path, strlen(initial_path));
-    print_UART(UART0, added_path, strlen(added_path));
+    print_UART(UART0, "\n", 1);
 }
 
 // Return the inode for the last directory in the file path
@@ -668,7 +668,9 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
             char dir_name[60];
             inode_t parent_inode = {0};
             int parent_inode_num = traverse_filesystem(rel_path, dir_name, &parent_inode);
+            // Check for errors
             if (parent_inode_num == -1) break;
+            // Make sure we have a name for this new directory
             if (strcmp(dir_name, "") == 0) {
                 print_UART(UART1, "Bad file path\n", 15);
             }
@@ -710,16 +712,20 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_RMDIR: {
             char* rel_path = (char*) ctx->gpr[0];
-            char dir_name[60];
+            char last_data[60];
             inode_t dir_inode = {0};
-            int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
-            if (dir_inode_num == -1) break; 
-            if (strcmp(dir_name, "") != 0) {
+            int dir_inode_num = traverse_filesystem(rel_path, last_data, &dir_inode);
+            // Check if we had errors
+            if (dir_inode_num == -1) break;
+            // There should be no data at the end of the path
+            if (strcmp(last_data, "") != 0) {
                 print_UART(UART1, "Bad file path\n", 15);
                 break;
             }    
 
             // Free the directory entry
+            dir_entry_t this_dir;
+            read_dir_entry(dir_inode.directptrs[0], &this_dir);
             dir_entry_t parent_dir;
             read_dir_entry(dir_inode.directptrs[1], &parent_dir);
             inode_t parent_inode;
@@ -727,9 +733,9 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
             dir_entry_t entry = {0};
             for (int i = 0; i < 12; i++) {
-                if (parent_inode.directptrs[i] == -1) {
+                if (parent_inode.directptrs[i] != -1) {
                     read_dir_entry(parent_inode.directptrs[i], &entry);
-                    if (strcmp(dir_name, entry.name) == 0) { 
+                    if (strcmp(this_dir.name, entry.name) == 0) { 
                         free_data_block(parent_inode.directptrs[i]);
                         parent_inode.directptrs[i] = -1;
                         write_inode_block(parent_dir.inode_num, &parent_inode);
@@ -743,15 +749,18 @@ void hilevel_handler_svc(ctx_t* ctx, uint32_t id) {
 
         case SYS_CHDIR: {
             char* rel_path = (char*) ctx->gpr[0];
-            char dir_name[60];
+            char last_data[60];
             inode_t dir_inode = {0};
-            int dir_inode_num = traverse_filesystem(rel_path, dir_name, &dir_inode);
+            int dir_inode_num = traverse_filesystem(rel_path, last_data, &dir_inode);
+            // Check for errors
             if (dir_inode_num == -1) break; 
-            if (strcmp(dir_name, "") != 0) {
+            // Make sure there is a correct file path
+            if (strcmp(last_data, "") != 0) {
                 print_UART(UART1, "Bad file path\n", 15);
                 break;
             }    
             calculate_path(running->cwd, rel_path);
+            print_UART(UART0, running->cwd, strlen(running->cwd));
             break;
         }
 

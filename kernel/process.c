@@ -70,7 +70,6 @@ pcb_t* create_PCB(const char* name, uint32_t entryPoint, pcb_t* parent) {
     
     // Store the value of the next file_descriptor
     pcb->next_fd = 3;
-    pcb->cwd = malloc(sizeof(char) * MAX_PATH);
     strcpy(pcb->cwd, "/");
 
     // Set the top of the process's stack

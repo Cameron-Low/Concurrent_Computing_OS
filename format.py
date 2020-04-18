@@ -7,7 +7,7 @@ disk.seek(16)
 disk.write(bytearray([1]))
 
 # Initialise the root directory inode
-for i in range(3,12):
+for i in range(3,13):
     disk.seek(32*64 + i*4)
     disk.write(bytearray([255, 255, 255, 255]))
 

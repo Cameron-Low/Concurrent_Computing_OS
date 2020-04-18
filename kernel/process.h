@@ -44,7 +44,7 @@ typedef struct pcb_t {
     int timeslice;
     int fdtable[MAX_FILES];
     int next_fd;
-    char* cwd;
+    char cwd[MAX_PATH];
 } pcb_t;
 
 // Process list node
